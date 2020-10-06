@@ -1,131 +1,77 @@
-from dataclasses import dataclass
+from __future__ import annotations
+from enum import Enum
+
 from Position import Position, Direction
 from City import City
+from LaneType import LaneType
 
+class IdleCar:
+    @classmethod
+    def advance(cls, car: Car):
+        pass
 
-@dataclass
-class CarProperties:
-    carId : int
-    position : Position
-    target: Position
-    city: City
+class ParkedCar:
+    @classmethod    
+    def advance(cls, car: Car):
+        pass
 
-class CarState():
-    def __init__(self, state):
-        self.__class__ = state
-    def switch(self, state):
-        self.__class__ = state
+class ParkingCar:    
+    @classmethod
+    def advance(cls, car: Car):
+        pass
+
+class MovingCar:
+    @classmethod
+    def advance(cls, car: Car):
+        car.position = cls.calculate_next_position(car)
     
-    def advance(self):
-        return NotImplementedError("")
+    @classmethod
+    def calculate_next_position(cls, car):
+        relative_position = cls.calculate_relative_position(car)
+        lane_type = car.city.lane_type_of_position(car.position)
+        direction = cls.calculate_direction(car, relative_position, lane_type)
+        return car.position + direction
 
-    def move(self):
-        return NotImplementedError("")
-    
-    def park(self):
-        return NotImplementedError("")
-
-    def stop(self):
-        return NotImplementedError("")
-
-class IdleCar(CarState):    
-    def advance(self):
-        pass
-
-    def move(self):
-        self.switch(MovingCar)
-    
-    def park(self):
-        self.switch(ParkingCar)
-
-    def stop(self):
-        pass
-
-class ParkedCar(CarState):
-    def advance(self):
-        pass
-
-    def move(self):
-        self.switch(MovingCar)
-    
-    def park(self):
-        pass
-
-    def stop(self):
-        self.switch(IdleCar)
-
-class ParkingCar(CarState):
-    def advance(self):
-        pass
-
-    def move(self):
-        self.switch(MovingCar)
-    
-    def park(self):
-        pass
-
-    def stop(self):
-        self.switch(IdleCar)
-
-class MovingCar(CarState):
-    def advance(self):
-        self.props.position = self.calculate_next_position()
-
-    def move(self):
-        pass
-    
-    def park(self):
-        self.switch(ParkingCar)
-
-    def stop(self):
-        self.switch(IdleCar)
-
-    def calculate_next_position(self):
-        relative_position = self.calculate_relative_position()
-        properties = self.props
-        lane_type = properties.city.lane_type_of_position(properties.position)
-        direction = self.calculate_direction(relative_position, lane_type)
-        return self.props.position + direction
-
-    def calculate_relative_position(self):
+    @classmethod
+    def calculate_relative_position(cls, car):
         relative_position = Position(0, 0)
 
-        if(self.props.position.x > self.props.target.x):
+        if(car.position.x > car.target.x):
             relative_position.x = -1
-        elif(self.props.position.x < self.props.target.x):
+        elif(car.position.x < car.target.x):
             relative_position.x = 1
 
-        if(self.props.position.y > self.props.target.y):
+        if(car.position.y > car.target.y):
             relative_position.y = -1
-        elif(self.props.position.y < self.props.target.y):
+        elif(car.position.y < car.target.y):
             relative_position.y = 1
 
         return relative_position
 
-    def calculate_direction(self, relative_position: Position, lane_type: str):
-        if(lane_type == ">"):
+    @classmethod
+    def calculate_direction(cls, car: Car, relative_position: Position, lane_type: LaneType):
+        if(lane_type == LaneType.East):
             return Direction(1, 0)
-        elif(lane_type == "<"):
+        elif(lane_type == LaneType.West):
             return Direction(-1, 0)
-        elif(lane_type == "^"):
+        elif(lane_type == LaneType.North):
             return Direction(0, -1)
-        elif(lane_type == "v"):
+        elif(lane_type == LaneType.South):
             return Direction(0, 1)
-        elif(lane_type == "x"):
-            return self.calculate_direction_at_x(relative_position)
+        elif(lane_type == LaneType.CrossRoad):
+            return cls.calculate_direction_at_x(car, relative_position)
         else:
             return Direction(0, 0)
 
-    def calculate_direction_at_x(self, relative_position: Position):
-        properties = self.props
-
+    @classmethod
+    def calculate_direction_at_x(cls, car: Car, relative_position: Position):
         # There are 4 cases
         if(relative_position == Position(0, 0)):
             return Direction(0, 0)
 
         # Upper Right X
-        elif(properties.city[properties.position.x - 1, properties.position.y] == "x"
-            and properties.city[properties.position.x, properties.position.y + 1] == "x"):
+        elif(car.city[car.position.x - 1, car.position.y] == LaneType.CrossRoad
+            and car.city[car.position.x, car.position.y + 1] == LaneType.CrossRoad):
             if(relative_position.y == -1):              # Go Up
                 return Direction(0, -1)
             elif(relative_position.x == -1):            # Go Left
@@ -133,8 +79,8 @@ class MovingCar(CarState):
             else:                                       # Go Below
                 return Direction(0, 1)
         # Upper Left X
-        elif(properties.city[properties.position.x + 1, properties.position.y] == "x"
-            and properties.city[properties.position.x, properties.position.y + 1] == "x"):
+        elif(car.city[car.position.x + 1, car.position.y] == LaneType.CrossRoad
+            and car.city[car.position.x, car.position.y + 1] == LaneType.CrossRoad):
             if(relative_position.x == -1):              # Go Left
                 return Direction(-1, 0)
             elif(relative_position.y == 1):             # Go Below
@@ -142,8 +88,8 @@ class MovingCar(CarState):
             else:                                       # Go Right
                 return Direction(1, 0)
         # Lower Left X
-        elif(properties.city[properties.position.x + 1, properties.position.y] == "x"
-            and properties.city[properties.position.x, properties.position.y - 1] == "x"):
+        elif(car.city[car.position.x + 1, car.position.y] == LaneType.CrossRoad
+            and car.city[car.position.x, car.position.y - 1] == LaneType.CrossRoad):
             if(relative_position.y == 1):               # Go Below
                 return Direction(0, 1)
             elif(relative_position.x == 1):             # Go Right
@@ -151,8 +97,8 @@ class MovingCar(CarState):
             else:                                       # Go Up
                 return Direction(0, -1)
         # Lower Right X
-        elif(properties.city[properties.position.x - 1, properties.position.y] == "x"
-            and properties.city[properties.position.x, properties.position.y - 1] == "x"):
+        elif(car.city[car.position.x - 1, car.position.y] == LaneType.CrossRoad
+            and car.city[car.position.x, car.position.y - 1] == LaneType.CrossRoad):
             if(relative_position.x == 1):               # Go Right
                 return Direction(1, 0)
             elif(relative_position.y == -1):            # Go Up
@@ -160,95 +106,105 @@ class MovingCar(CarState):
             else:                                       # Go Left
                 return Direction(-1, 0)
 
-        
-        
+class CirclingCar:
+    @classmethod
+    def advance(cls, car: Car):
+        car.position = cls.calculate_next_position(car)
 
-class CirclingCar(CarState):
-    def advance(self):
-        self.props.position = self.calculate_next_position()
+    @classmethod
+    def calculate_next_position(cls, car: Car):
+        relative_position = cls.calculate_relative_position(car)
+        lane_type = car.city.lane_type_of_position(car.position)
+        direction = cls.calculate_direction(car, relative_position, lane_type)
+        return car.position + direction
 
-    def move(self):
-        self.switch(MovingCar)
-    
-    def park(self):
-        self.switch(ParkingCar)
-
-    def calculate_next_position(self):
-        relative_position = self.calculate_relative_position()
-        properties = self.props
-        lane_type = properties.city.lane_type_of_position(properties.position)
-        direction = self.calculate_direction(relative_position, lane_type)
-        return self.props.position + direction
-
-    def calculate_relative_position(self):
+    @classmethod
+    def calculate_relative_position(cls, car: Car):
         relative_position = Position(0, 0)
 
-        if(self.props.position.x > self.props.target.x):
+        if(car.position.x > car.target.x):
             relative_position.x = -1
-        elif(self.props.position.x < self.props.target.x):
+        elif(car.position.x < car.target.x):
             relative_position.x = 1
 
-        if(self.props.position.y > self.props.target.y):
+        if(car.position.y > car.target.y):
             relative_position.y = -1
-        elif(self.props.position.y < self.props.target.y):
+        elif(car.position.y < car.target.y):
             relative_position.y = 1
 
         return relative_position
 
-    def calculate_direction(self, relative_position, lane_type):
-        if(lane_type == ">"):
+    @classmethod
+    def calculate_direction(cls, car: Car, relative_position, lane_type):
+        if(lane_type == LaneType.East):
             return Direction(1, 0)
-        elif(lane_type == "<"):
+        elif(lane_type == LaneType.West):
             return Direction(-1, 0)
-        elif(lane_type == "^"):
+        elif(lane_type == LaneType.North):
             return Direction(0, -1)
-        elif(lane_type == "v"):
+        elif(lane_type == LaneType.South):
             return Direction(0, 1)
-        elif(lane_type == "x"):
-            return self.calculate_direction_at_x(relative_position)
+        elif(lane_type == LaneType.CrossRoad):
+            return cls.calculate_direction_at_x(car, relative_position)
         else:
             return Direction(0, 0)
 
-    def calculate_direction_at_x(self, relative_position):
-        properties = self.props
-
+    @classmethod
+    def calculate_direction_at_x(cls, car, relative_position):
         # Upper Right X
-        if(properties.city[properties.position.x - 1, properties.position.y] == "x"
-            and properties.city[properties.position.x, properties.position.y + 1] == "x"):
+        if(car.city[car.position.x - 1, car.position.y] == "x"
+            and car.city[car.position.x, car.position.y + 1] == "x"):
                 return Direction(0, -1)
         # Upper Left X
-        elif(properties.city[properties.position.x + 1, properties.position.y] == "x"
-            and properties.city[properties.position.x, properties.position.y + 1] == "x"):
+        elif(car.city[car.position.x + 1, car.position.y] == "x"
+            and car.city[car.position.x, car.position.y + 1] == "x"):
                 return Direction(-1, 0)
         # Lower Left X
-        elif(properties.city[properties.position.x + 1, properties.position.y] == "x"
-            and properties.city[properties.position.x, properties.position.y - 1] == "x"):
+        elif(car.city[car.position.x + 1, car.position.y] == "x"
+            and car.city[car.position.x, car.position.y - 1] == "x"):
                 return Direction(0, 1)
         # Lower Right X
-        elif(properties.city[properties.position.x - 1, properties.position.y] == "x"
-            and properties.city[properties.position.x, properties.position.y - 1] == "x"):
+        elif(car.city[car.position.x - 1, car.position.y] == "x"
+            and car.city[car.position.x, car.position.y - 1] == "x"):
                 return Direction(1, 0)
             
-        
+class CarState(Enum):
+    IdleCar = 0
+    ParkedCar = 1
+    ParkingCar = 2
+    MovingCar = 3
+    CirclingCar = 4
+
+CarStateClassDict = {
+    CarState.IdleCar : IdleCar,
+    CarState.ParkedCar : ParkedCar,
+    CarState.ParkingCar : ParkingCar,
+    CarState.MovingCar : MovingCar,
+    CarState.CirclingCar : CirclingCar,
+
+}
 
 
 
 class Car:
-    def __init__(self, state: CarState, carId: int, position: Position, target: Position, city: City):
-        self.state = CarState(state)
-        self.state.props = CarProperties(carId, position, target, city)
+    def __init__(self, carId: int, position: Position, target: Position, city: City):
+        self.carId = carId
+        self.position = position
+        self.target = target
+        self.city = city
+        self.state = CarState.IdleCar
 
     def __str__(self):
-        return str(self.state.props) + "in state " + str(self.state.__class__)
+        return "("+str(self.carId) + ","+ str(self.position) + "," + str(self.target) + "," + str(self.state) + ")"
 
     def advance(self):
-        self.state.advance()
+        CarStateClassDict[self.state].advance(self)
 
     def move(self):
-        self.state.move()
+        self.state = CarState.MovingCar
     
     def park(self):
-        self.state.park()
+        self.state = CarState.ParkingCar
     
     def stop(self):
-        self.state.stop()
+        self.state = CarState.IdleCar

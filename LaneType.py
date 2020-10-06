@@ -11,28 +11,28 @@ class LaneType(Enum):
 
     def __str__(self):
         # East 
-        if(self.value == 0):
+        if(self.value == self.East.value):
             return ">"
         # North 
-        elif(self.value == 1):
+        elif(self.value == self.North.value):
             return "^"
         # West 
-        elif(self.value == 2):
+        elif(self.value == self.West.value):
             return "<"
         # South 
-        elif(self.value == 3):
+        elif(self.value == self.South.value):
             return "v"
         # CrossRoad 
-        elif(self.value == 4):
+        elif(self.value == self.CrossRoad.value):
             return "x"
         # Park 
-        elif(self.value == 5):
+        elif(self.value == self.Park.value):
             return "2"
         # Building 
-        elif(self.value == 6):
+        elif(self.value == self.Building.value):
             return "#"
         # TrafficLight 
-        elif(self.value == 7):
+        elif(self.value == self.TrafficLight.value):
             return "1"
         # None
         else:
