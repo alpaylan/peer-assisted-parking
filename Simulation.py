@@ -52,8 +52,15 @@ class CitySimulation:
         return None
 
     def calculate(self) -> None:
+        next_positions = set()
+
         for car in self.cars:
-            car.advance()
+            c_pos = set()
+            c_pos.add(car.calculate())
+            if(c_pos.issubset(next_positions) == False):
+                next_positions = next_positions.union(c_pos)
+                car.advance()
+            
         if(self.car_notification_on):
             free_park_spaces = car.notify()
             self.notify_neighbor_cars(car, free_park_spaces)

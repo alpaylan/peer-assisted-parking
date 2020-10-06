@@ -25,6 +25,9 @@ class Position:
     def __eq__(self, other:Position) -> bool:
         return (self.x == other.x) and (self.y == other.y)
 
+    def __hash__(self):
+        return hash((self.x, self.y))
+
     def turn(self) -> Position:
         return Position(self.y, self.x)
 

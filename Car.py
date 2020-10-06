@@ -9,21 +9,37 @@ class IdleCar:
     @classmethod
     def advance(cls, car: Car):
         pass
-
+    
+    @classmethod
+    def calculate(cls, car: Car) -> Position:
+        return car.position
+    
 class ParkedCar:
     @classmethod    
     def advance(cls, car: Car):
         pass
+
+    @classmethod
+    def calculate(cls, car: Car) -> Position:
+        return car.position
 
 class ParkingCar:    
     @classmethod
     def advance(cls, car: Car):
         pass
 
+    @classmethod
+    def calculate(cls, car: Car) -> Position:
+        return car.position
+
 class MovingCar:
     @classmethod
     def advance(cls, car: Car):
         car.position = cls.calculate_next_position(car)
+    
+    @classmethod
+    def calculate(cls, car: Car) -> Position:
+        return cls.calculate_next_position(car)
     
     @classmethod
     def calculate_next_position(cls, car):
@@ -112,6 +128,10 @@ class CirclingCar:
         car.position = cls.calculate_next_position(car)
 
     @classmethod
+    def calculate(cls, car: Car) -> Position:
+        return cls.calculate_next_position(car)
+    
+    @classmethod
     def calculate_next_position(cls, car: Car):
         relative_position = cls.calculate_relative_position(car)
         lane_type = car.city.lane_type_of_position(car.position)
@@ -181,6 +201,9 @@ class Car:
 
     def advance(self):
         self.state.advance(self)
+
+    def calculate(self):
+        return self.state.calculate(self)
 
     def move(self):
         self.state = MovingCar
