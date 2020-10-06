@@ -152,39 +152,21 @@ class CirclingCar:
     @classmethod
     def calculate_direction_at_x(cls, car, relative_position):
         # Upper Right X
-        if(car.city[car.position.x - 1, car.position.y] == "x"
-            and car.city[car.position.x, car.position.y + 1] == "x"):
+        if(car.city[car.position.x - 1, car.position.y] == LaneType.CrossRoad
+            and car.city[car.position.x, car.position.y + 1] == LaneType.CrossRoad):
                 return Direction(0, -1)
         # Upper Left X
-        elif(car.city[car.position.x + 1, car.position.y] == "x"
-            and car.city[car.position.x, car.position.y + 1] == "x"):
+        elif(car.city[car.position.x + 1, car.position.y] == LaneType.CrossRoad
+            and car.city[car.position.x, car.position.y + 1] == LaneType.CrossRoad):
                 return Direction(-1, 0)
         # Lower Left X
-        elif(car.city[car.position.x + 1, car.position.y] == "x"
-            and car.city[car.position.x, car.position.y - 1] == "x"):
+        elif(car.city[car.position.x + 1, car.position.y] == LaneType.CrossRoad
+            and car.city[car.position.x, car.position.y - 1] == LaneType.CrossRoad):
                 return Direction(0, 1)
         # Lower Right X
-        elif(car.city[car.position.x - 1, car.position.y] == "x"
-            and car.city[car.position.x, car.position.y - 1] == "x"):
+        elif(car.city[car.position.x - 1, car.position.y] == LaneType.CrossRoad
+            and car.city[car.position.x, car.position.y - 1] == LaneType.CrossRoad):
                 return Direction(1, 0)
-            
-class CarState(Enum):
-    IdleCar = 0
-    ParkedCar = 1
-    ParkingCar = 2
-    MovingCar = 3
-    CirclingCar = 4
-
-CarStateClassDict = {
-    CarState.IdleCar : IdleCar,
-    CarState.ParkedCar : ParkedCar,
-    CarState.ParkingCar : ParkingCar,
-    CarState.MovingCar : MovingCar,
-    CarState.CirclingCar : CirclingCar,
-
-}
-
-
 
 class Car:
     def __init__(self, carId: int, position: Position, target: Position, city: City):
@@ -192,19 +174,19 @@ class Car:
         self.position = position
         self.target = target
         self.city = city
-        self.state = CarState.IdleCar
+        self.state = IdleCar
 
     def __str__(self):
         return "("+str(self.carId) + ","+ str(self.position) + "," + str(self.target) + "," + str(self.state) + ")"
 
     def advance(self):
-        CarStateClassDict[self.state].advance(self)
+        self.state.advance(self)
 
     def move(self):
-        self.state = CarState.MovingCar
+        self.state = MovingCar
     
     def park(self):
-        self.state = CarState.ParkingCar
+        self.state = ParkingCar
     
     def stop(self):
-        self.state = CarState.IdleCar
+        self.state = IdleCar
