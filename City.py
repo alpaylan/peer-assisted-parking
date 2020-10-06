@@ -1,9 +1,11 @@
 from Position import Position
+from LaneType import LaneType
 """
 City is represented with an m*n grid.
-It consists of b*b buildings seperated by r parking spaces, 2r roads.
+It consists of b_num*b_num buildings with size b_size*b_size
+equality seperated by 1 parking spaces and 2 roads.
 """
-class City():
+class City:
     def __init__(self, b_size:int = 1, b_num:int = 1) -> None:
         self.grid = self.create_grid(b_num * (b_size + 4) - 4, b_num * (b_size + 4) - 4, b_size)
     
@@ -52,44 +54,44 @@ class City():
                     
                     # Building
                     if(i % t <= b-1 and j % t <= b-1):
-                        grid[i][j] = "#"
+                        grid[i][j] = LaneType.Building
                     
                     # Traffic Light
                     elif((i % t == b and j % t == b)
                         or (i % t == b+3 and j % t == b+3)
                         or (i % t == b and j % t == b+3)
                         or (i % t == b+3 and j % t == b)):
-                        grid[i][j] = 1
+                        grid[i][j] = LaneType.TrafficLight
                     
                     # Parking Spot
                     elif((i % t == b and j % t < b)
                         or (i % t < b and j % t == b)
                         or (i % t < b and j % t == b+3)
                         or (i % t == b+3 and j % t <= b)):
-                        grid[i][j] = 2
+                        grid[i][j] = LaneType.Park
                     
                     # Intersection
                     elif((i % t == b + 2 and j % t == b + 2)
                         or (i % t == b+1 and j % t == b+1)
                         or (i % t == b+1 and j % t == b + 2)
                         or (i % t == b + 2 and j % t == b+1)):
-                        grid[i][j] = "x"
+                        grid[i][j] = LaneType.CrossRoad
                     
                     # East Road
                     elif(i % t == b + 2):
-                        grid[i][j] = ">"
+                        grid[i][j] = LaneType.East
 
                     # North Road
                     elif(j % t == b + 2):
-                        grid[i][j] = "^"
+                        grid[i][j] = LaneType.North
                     
                     # West Road
                     elif(i % t == b+1):
-                        grid[i][j] = "<"
+                        grid[i][j] = LaneType.West
                     
                     # South Road
                     elif(j % t == b+1):
-                        grid[i][j] = "v"
+                        grid[i][j] = LaneType.South
         return grid
 
     def lane_type_of_position(self, position: Position):
