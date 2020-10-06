@@ -20,12 +20,17 @@ class City:
     
     def print_city_with_cars(self, car_position_list):
         g_str = ""
+        g_str += "".ljust(3)
         for i in range(len(self.grid)):
+            g_str += str(i).ljust(3)
+        g_str += "\n"
+        for i in range(len(self.grid)):
+            g_str += str(i).ljust(3)
             for j in range(len(self.grid[0])):
                 if(Position(j, i) in car_position_list):
-                    g_str += "c "
+                    g_str += "c".ljust(3)
                 else:
-                    g_str += str(self.grid[i][j]) + " "
+                    g_str += str(self.grid[i][j]).ljust(3)
             g_str += "\n"
         g_str = g_str[:len(g_str) - 1]
         return g_str

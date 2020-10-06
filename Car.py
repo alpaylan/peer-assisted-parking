@@ -26,11 +26,55 @@ class ParkedCar:
 class ParkingCar:    
     @classmethod
     def advance(cls, car: Car):
-        pass
-
+        if(cls.check_sides(car) == True):
+            cls.park(car, cls.park_position(car))
+            
+        else:
+            car.state = CirclingCar
+            car.advance()
+            car.state = ParkingCar
+        
     @classmethod
     def calculate(cls, car: Car) -> Position:
-        return car.position
+        if(cls.check_sides(car) == True):
+            return cls.park_position(car)        
+        else:
+            car.state = CirclingCar
+            calculated_position = car.calculate()
+            car.state = ParkingCar
+            return calculated_position
+        
+    @classmethod
+    def check_sides(cls, car):
+        if(car.city.lane_type_of_position(car.position) == LaneType.East):
+            return (car.city[car.position.x, car.position.y + 1] == LaneType.Park)
+        elif(car.city.lane_type_of_position(car.position) == LaneType.West):
+            return (car.city[car.position.x, car.position.y - 1] == LaneType.Park)
+        elif(car.city.lane_type_of_position(car.position) == LaneType.North):
+            return (car.city[car.position.x + 1, car.position.y] == LaneType.Park)
+        elif(car.city.lane_type_of_position(car.position) == LaneType.South):
+            return (car.city[car.position.x - 1, car.position.y] == LaneType.Park)
+        else:
+            return False
+
+    @classmethod
+    def park_position(cls, car):
+        if(car.city.lane_type_of_position(car.position) == LaneType.East):
+            return Position(car.position.x, car.position.y + 1)
+        elif(car.city.lane_type_of_position(car.position) == LaneType.West):
+            return Position(car.position.x, car.position.y - 1)
+        elif(car.city.lane_type_of_position(car.position) == LaneType.North):
+            return Position(car.position.x + 1, car.position.y)
+        elif(car.city.lane_type_of_position(car.position) == LaneType.South):
+            return Position(car.position.x - 1, car.position.y)
+        else:
+            raise Exception
+
+    @classmethod
+    def park(cls, car, park_position):
+        car.position = park_position
+        car.state = ParkedCar
+        car.city[car.position.x, car.position.y] = LaneType.Parked
 
 class MovingCar:
     @classmethod
@@ -201,6 +245,8 @@ class Car:
 
     def advance(self):
         self.state.advance(self)
+        if(self.position.manhattan(self.target) < 8):
+            self.park()
 
     def calculate(self):
         return self.state.calculate(self)
@@ -209,6 +255,8 @@ class Car:
         self.state = MovingCar
     
     def park(self):
+        if(self.state == ParkedCar or self.state == IdleCar):
+            pass
         self.state = ParkingCar
     
     def stop(self):

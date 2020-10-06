@@ -31,5 +31,11 @@ class Position:
     def turn(self) -> Position:
         return Position(self.y, self.x)
 
+    def manhattan(self, other: Position) -> int:
+        return abs(self.x - other.x) + abs(self.y - other.y)
+
+    def euclid(self, other) -> float:
+        return ((self.x - other.x)**2 + (self.y - other.y)**2)**0.5
+
 Direction = Position
 
