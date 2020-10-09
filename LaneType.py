@@ -9,6 +9,8 @@ class LaneType(Enum):
     Building = 6
     TrafficLight = 7
     Parked = 8
+    InnerLoop = 9
+    OuterLoop = 10
     def __str__(self):
         # East 
         if(self.value == self.East.value):
@@ -37,6 +39,12 @@ class LaneType(Enum):
         # Parked
         elif(self.value == self.Parked.value):
             return "p"
+        # InnerLoop
+        elif(self.value == self.InnerLoop.value):
+            return "i"
+        # OuterLoop
+        elif(self.value == self.OuterLoop.value):
+            return "o"
         # None
         else:
             return "?"
