@@ -46,13 +46,17 @@ class ParkingCar:
         
     @classmethod
     def check_sides(cls, car):
-        if(car.city.lane_type_of_position(car.position) == LaneType.Right):
+        if((car.city.lane_type_of_position(car.position) == LaneType.Right)
+            and (car.city.is_inside(car.position.x, car.position.y + 1))):
             return (car.city[car.position.x, car.position.y + 1] == LaneType.FreePark)
-        elif(car.city.lane_type_of_position(car.position) == LaneType.Left):
+        elif((car.city.lane_type_of_position(car.position) == LaneType.Left)
+            and (car.city.is_inside(car.position.x, car.position.y - 1))):
             return (car.city[car.position.x, car.position.y - 1] == LaneType.FreePark)
-        elif(car.city.lane_type_of_position(car.position) == LaneType.Up):
+        elif((car.city.lane_type_of_position(car.position) == LaneType.Up)
+            and (car.city.is_inside(car.position.x + 1, car.position.y))):
             return (car.city[car.position.x + 1, car.position.y] == LaneType.FreePark)
-        elif(car.city.lane_type_of_position(car.position) == LaneType.Down):
+        elif((car.city.lane_type_of_position(car.position) == LaneType.Down)
+            and (car.city.is_inside(car.position.x - 1, car.position.y))):
             return (car.city[car.position.x - 1, car.position.y] == LaneType.FreePark)
         else:
             return False
