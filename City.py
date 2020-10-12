@@ -100,17 +100,19 @@ class City:
         g_str = ""
         g_str += "".ljust(3)
         for i in range(len(self.grid)):
-            g_str += str(i).ljust(3)
+            g_str += str(i).ljust(4)
         g_str += "\n"
         for i in range(len(self.grid)):
-            g_str += str(i).ljust(3)
+            g_str += str(i).ljust(4)
             for j in range(len(self.grid[0])):
                 if(Position(j, i) in car_position_list):
-                    g_str += "c".ljust(3)
+                    g_str += ("c" + str(car_position_list.index(Position(j, i)))).ljust(4)
                 elif((j + 1, i + 1) in self.building_positions):
-                    g_str += str(self.num_free_park_spaces(j+1, i+1)).ljust(3)
+                    g_str += str(self.num_free_park_spaces(j+1, i+1)).ljust(4)
+                elif(self.grid[i][j] == LaneType.Building):
+                    g_str += str(self.grid[i][j]).ljust(4, str(self.grid[i][j]))
                 else:
-                    g_str += str(self.grid[i][j]).ljust(3)
+                    g_str += str(self.grid[i][j]).ljust(4)
             g_str += "\n"
         g_str = g_str[:len(g_str) - 1]
         return g_str
