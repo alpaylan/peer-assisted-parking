@@ -74,7 +74,7 @@ class CitySimulation:
         for car in self.cars:
             car_position_list.append(car.position)
 
-        print(self.city.print_city_with_cars(car_position_list))
+        return self.city.print_city_with_cars(car_position_list)
         
     def print_cars(self) -> None:
 
