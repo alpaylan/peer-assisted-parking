@@ -168,8 +168,8 @@ class City:
                     int(self.building_size/2 + y*(self.building_size + 4))) 
 
         def calculate_building_position_bordered():
-            return (int(3 + self.building_size/2 + x*(self.building_size + 4)), 
-                    int(3 + self.building_size/2 + y*(self.building_size + 4))) 
+            return (int(3 + (self.building_size + 1)//2 + x*(self.building_size + 4)), 
+                    int(3 + (self.building_size + 1)/2 + y*(self.building_size + 4))) 
 
         def calculate_building_position_line():
             raise NotImplementedError
