@@ -107,6 +107,8 @@ class City:
             for j in range(len(self.grid[0])):
                 if(Position(j, i) in car_position_list):
                     g_str += "c".ljust(3)
+                elif((j + 1, i + 1) in self.building_positions):
+                    g_str += str(self.num_free_park_spaces(j+1, i+1)).ljust(3)
                 else:
                     g_str += str(self.grid[i][j]).ljust(3)
             g_str += "\n"
@@ -283,4 +285,10 @@ class City:
             else:
                 self.mark_grid(len(self.grid) - 1, i, LaneType.Up)
 
-        
+    def num_free_park_spaces(self, x, y):
+        count = 0
+        for i in range(x - (self.building_size + 1)//2 - 1, x + (self.building_size + 1)//2 + 1):
+            for j in range(y - (self.building_size + 1)//2 - 1, y + (self.building_size + 1)//2 + 1):
+                if(self[i, j] == LaneType.FreePark):
+                    count += 1
+        return count
