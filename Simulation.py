@@ -4,12 +4,11 @@ from Position import Position, Direction
 from typing import List
 class CitySimulation:
     def __init__(self, **kwargs):
-        self.city = City(kwargs["building_size"], kwargs["building_number"])
+        self.city = City(kwargs["building_size"], kwargs["building_number"], kwargs["c_type"])
         self.car_num = kwargs["number_of_cars"]
         self.cars: List[Car] = []
         self.car_notification_on = kwargs["car_notification_on"]
         self.CAR_NOTIFICATION_RANGE = kwargs["car_notification_range"]
-
     def advance(self) -> None:
         self.calculate()
 
