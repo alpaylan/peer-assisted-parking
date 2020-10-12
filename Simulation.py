@@ -1,7 +1,10 @@
+from typing import List
+from random import randint
+
 from City import City
 from Car import Car, IdleCar
 from Position import Position, Direction
-from typing import List
+
 class CitySimulation:
     def __init__(self, **kwargs):
         self.city = City(kwargs["building_size"], kwargs["building_number"], kwargs["c_type"])
@@ -39,16 +42,30 @@ class CitySimulation:
             exit(0)
         car.stop()
 
-    def add_car(self, start: Position, target: Position) -> None:
+    def add_car(self, start: Position, target: Position) -> int:
         carId = len(self.cars)
         c = Car(carId, start, target, self.city)
         self.cars.append(c)
+        return carId
+    
+    def add_random_car(self):
+        border = randint(0, 3)
+        pos = randint(0, len(self.city.grid) - 1)
+        target_building = randint(0, len(self.city.building_positions) - 1)
+        t_pos = Position(self.city.building_positions[target_building][0], self.city.building_positions[target_building][1])
+        if(border == 0):
+            return self.add_car(Position(pos, 0), t_pos)
+        elif(border == 1):
+            return self.add_car(Position(0, pos), t_pos)
+        elif(border == 2):
+            return self.add_car(Position(pos, len(self.city.grid) - 1), t_pos)
+        elif(border == 3):
+            return self.add_car(Position(len(self.city.grid) - 1, pos), t_pos)
+        
+        return self.add_car(0, 0)
 
     def find_car_with_id(self, carID) -> Car:
-        for i in self.cars:
-            if(i.state.props.carID == carID):
-                return i
-        return None
+        return self.cars[carID]
 
     def calculate(self) -> None:
         next_positions = set()
