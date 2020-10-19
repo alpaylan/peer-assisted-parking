@@ -123,10 +123,10 @@ class MovingCar:
         elif(lane_type == LaneType.Down):
             return Direction(0, 1)
         else:
-            return cls.calculate_direction_relatively(car, relative_position, lane_type)
+            return cls.turning_direction(car, relative_position, lane_type)
 
     @classmethod
-    def calculate_direction_relatively(cls, car: Car, relative_position: Position, lane_type: LaneType):
+    def turning_direction(cls, car: Car, relative_position: Position, lane_type: LaneType):
         if(lane_type == LaneType.RightToDown):
             """ Move Right or Down"""
             if(relative_position.x == 1):
@@ -160,6 +160,7 @@ class MovingCar:
             """ Move Left"""
             return Direction(-1, 0)
         return Direction(0, 0)
+
 class CirclingCar:
     @classmethod
     def advance(cls, car: Car):
@@ -172,9 +173,12 @@ class CirclingCar:
     @classmethod
     def calculate_next_position(cls, car: Car, type):
         lane_type = car.city.lane_type_of_position(car.position)
-        """ 20 is a magic number, change it """
+        """ todo@alpkeles: 20 is a magic number, change it """
+        """ supposed to stop infinite loop around the block """
         if(car.circling_time >= 20 and ((lane_type.value & Masks.TW_ROAD_MASK) != 0)):
-            direction = cls.calculate_direction_reverse(car, lane_type)
+            direction = cls.forward_direction(car, lane_type)
+            """ todo@alpkeles: Tricky hack, get rid of it!! """
+            """ supposed to help with the infinite loop hack """
             if(type == "adv"):
                 car.circling_time = 0
         else:   
@@ -183,6 +187,18 @@ class CirclingCar:
 
     @classmethod
     def calculate_relative_position(cls, car: Car):
+        """
+               0,-1
+                |
+        -1,-1   |   1, -1
+                |
+     -1,0 ------c------ 1, 0
+                |
+        -1, 1   |   1, 1
+                |
+               0,1
+        """
+
         relative_position = Position(0, 0)
 
         if(car.position.x > car.target.x):
@@ -208,62 +224,68 @@ class CirclingCar:
         elif(lane_type == LaneType.Down):
             return Direction(0, 1)
         else:
-            return cls.calculate_direction_relatively(car, lane_type)
+            return cls.turning_direction(car, lane_type)
 
     @classmethod
-    def calculate_direction_relatively(cls, car, lane_type):
-        if(lane_type == LaneType.RightToDown):
-            """ Move Down"""
+    def turning_direction(cls, car, lane_type):
+        if((lane_type == LaneType.RightToDown) 
+            or (lane_type == LaneType.LeftToDown)):
+            """ Move Down """
             return Direction(0, 1)
-        if(lane_type == LaneType.DownToRight):
-            """ Move Right"""
-            return Direction(1, 0)
-        if(lane_type == LaneType.LeftToDown):
-            """ Move Down"""
-            return Direction(0, 1)
-        if(lane_type == LaneType.DownToLeft):
-            """ Move Left"""
+        if((lane_type == LaneType.DownToLeft) 
+            or (lane_type == LaneType.UpToLeft)):
+            """ Move Left """
             return Direction(-1, 0)
-        if(lane_type == LaneType.RightToUp):
-            """ Move Up"""
-            return Direction(0, -1)
-        if(lane_type == LaneType.UpToRight):
-            """ Move Right"""
+        if((lane_type == LaneType.DownToRight) 
+            or (lane_type == LaneType.UpToRight)):
+            """ Move Right """
             return Direction(1, 0)
-        if(lane_type == LaneType.LeftToUp):
-            """ Move Up"""
+        if((lane_type == LaneType.RightToUp) 
+            or (lane_type == LaneType.LeftToUp)):
+            """ Move Up """
             return Direction(0, -1)
-        if(lane_type == LaneType.UpToLeft):
-            """ Move Left"""
-            return Direction(-1, 0)
+
         return Direction(0, 0)
+
     @classmethod
-    def calculate_direction_reverse(cls, car, lane_type):
-        if(lane_type == LaneType.RightToDown):
-            """ Move Down"""
-            return Direction(1, 0)
+    def forward_direction(cls, car, lane_type):
+        """ 
+        There are 2 cases, either position is at the border
+        or the positions is at the center. If border, there
+        exists no choice but turn, but at center, the vehicle
+        goes forward. First 4 cases are border, last 4 are center.
+        """
+        # Border
         if(lane_type == LaneType.DownToRight):
             """ Move Right"""
             return Direction(1, 0)
-        if(lane_type == LaneType.LeftToDown):
-            """ Move Down"""
-            return Direction(0, 1)
-        if(lane_type == LaneType.DownToLeft):
-            """ Move Left"""
-            return Direction(0, 1)
         if(lane_type == LaneType.RightToUp):
             """ Move Up"""
             return Direction(0, -1)
-        if(lane_type == LaneType.UpToRight):
-            """ Move Right"""
-            return Direction(0, -1)
-        if(lane_type == LaneType.LeftToUp):
-            """ Move Up"""
-            return Direction(-1, 0)
         if(lane_type == LaneType.UpToLeft):
             """ Move Left"""
             return Direction(-1, 0)
+        if(lane_type == LaneType.LeftToDown):
+            """ Move Down"""
+            return Direction(0, 1)
+        
+        # Center
+        if(lane_type == LaneType.RightToDown):
+            """ Move Down"""
+            return Direction(1, 0)
+        if(lane_type == LaneType.DownToLeft):
+            """ Move Left"""
+            return Direction(0, 1)
+        if(lane_type == LaneType.LeftToUp):
+            """ Move Up"""
+            return Direction(-1, 0)
+        if(lane_type == LaneType.UpToRight):
+            """ Move Right"""
+            return Direction(0, -1)
+
         return Direction(0, 0)
+
+
 class Car:
     def __init__(self, carId: int, position: Position, target: Position, city: City):
         self.carId = carId
@@ -278,6 +300,7 @@ class Car:
 
     def advance(self):
         self.state.advance(self)
+        """ 8 is magic, fix it!! """
         if(self.position.manhattan(self.target) < 8):
             self.park()
 
