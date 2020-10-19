@@ -12,6 +12,7 @@ class CitySimulation:
         self.cars: List[Car] = []
         self.car_notification_on = kwargs["car_notification_on"]
         self.CAR_NOTIFICATION_RANGE = kwargs["car_notification_range"]
+
     def advance(self) -> None:
         self.calculate()
 
@@ -22,7 +23,6 @@ class CitySimulation:
             self.print_cars()
         else:
             self.print_city()
-
 
     def activate_cars(self) -> None:
         for c in self.cars:
@@ -87,7 +87,7 @@ class CitySimulation:
                 car.notify(c)
         pass
 
-    def print_city(self) -> None:
+    def print_city(self) -> str:
         car_position_list = []
 
         for car in self.cars:
@@ -95,8 +95,9 @@ class CitySimulation:
 
         return self.city.print_city_with_cars(car_position_list)
         
-    def print_cars(self) -> None:
-
+    def print_cars(self) -> str:
+        car_str = ""
         for car in self.cars:
-            print(car)
+            car_str += str(car) + "\n"
+        return car_str
 
