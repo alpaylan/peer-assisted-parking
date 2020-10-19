@@ -54,6 +54,10 @@ def main(stdscr):
             carId = sim.add_random_car()
             sim.activate_car(carId)
             pass
+        if ord('1') <= ch and ch <= ord('9'):
+            for _ in range(ch - 48):
+                carId = sim.add_random_car()
+            sim.activate_cars()
         stdscr.clear()
         stdscr.addstr(1, stdscr.getmaxyx()[1]//2 - 3, "Epoch" + str(j), curses.A_BOLD)
         lines = str(sim.print_city()).split("\n")
