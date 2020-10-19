@@ -3,7 +3,7 @@ from enum import Enum
 
 from Position import Position, Direction
 from City import City
-from LaneType import LaneType
+from LaneType import LaneType, Masks
 
 class IdleCar:
     @classmethod
@@ -163,17 +163,22 @@ class MovingCar:
 class CirclingCar:
     @classmethod
     def advance(cls, car: Car):
-        car.position = cls.calculate_next_position(car)
-
+        car.position = cls.calculate_next_position(car, "adv")
+        car.circling_time += 1
     @classmethod
     def calculate(cls, car: Car) -> Position:
-        return cls.calculate_next_position(car)
+        return cls.calculate_next_position(car, "calc")
     
     @classmethod
-    def calculate_next_position(cls, car: Car):
-        relative_position = cls.calculate_relative_position(car)
+    def calculate_next_position(cls, car: Car, type):
         lane_type = car.city.lane_type_of_position(car.position)
-        direction = cls.calculate_direction(car, relative_position, lane_type)
+        """ 20 is a magic number, change it """
+        if(car.circling_time >= 20 and ((lane_type.value & Masks.TW_ROAD_MASK) != 0)):
+            direction = cls.calculate_direction_reverse(car, lane_type)
+            if(type == "adv"):
+                car.circling_time = 0
+        else:   
+            direction = cls.calculate_direction(car, lane_type)
         return car.position + direction
 
     @classmethod
@@ -193,7 +198,7 @@ class CirclingCar:
         return relative_position
 
     @classmethod
-    def calculate_direction(cls, car: Car, relative_position, lane_type):
+    def calculate_direction(cls, car: Car, lane_type):
         if(lane_type == LaneType.Right):
             return Direction(1, 0)
         elif(lane_type == LaneType.Left):
@@ -203,10 +208,10 @@ class CirclingCar:
         elif(lane_type == LaneType.Down):
             return Direction(0, 1)
         else:
-            return cls.calculate_direction_relatively(car, relative_position, lane_type)
+            return cls.calculate_direction_relatively(car, lane_type)
 
     @classmethod
-    def calculate_direction_relatively(cls, car, relative_position, lane_type):
+    def calculate_direction_relatively(cls, car, lane_type):
         if(lane_type == LaneType.RightToDown):
             """ Move Down"""
             return Direction(0, 1)
@@ -232,6 +237,33 @@ class CirclingCar:
             """ Move Left"""
             return Direction(-1, 0)
         return Direction(0, 0)
+    @classmethod
+    def calculate_direction_reverse(cls, car, lane_type):
+        if(lane_type == LaneType.RightToDown):
+            """ Move Down"""
+            return Direction(1, 0)
+        if(lane_type == LaneType.DownToRight):
+            """ Move Right"""
+            return Direction(1, 0)
+        if(lane_type == LaneType.LeftToDown):
+            """ Move Down"""
+            return Direction(0, 1)
+        if(lane_type == LaneType.DownToLeft):
+            """ Move Left"""
+            return Direction(0, 1)
+        if(lane_type == LaneType.RightToUp):
+            """ Move Up"""
+            return Direction(0, -1)
+        if(lane_type == LaneType.UpToRight):
+            """ Move Right"""
+            return Direction(0, -1)
+        if(lane_type == LaneType.LeftToUp):
+            """ Move Up"""
+            return Direction(-1, 0)
+        if(lane_type == LaneType.UpToLeft):
+            """ Move Left"""
+            return Direction(-1, 0)
+        return Direction(0, 0)
 class Car:
     def __init__(self, carId: int, position: Position, target: Position, city: City):
         self.carId = carId
@@ -239,7 +271,8 @@ class Car:
         self.target = target
         self.city = city
         self.state = IdleCar
-
+        self.free_park_spaces = []
+        self.circling_time = 0
     def __str__(self):
         return "("+str(self.carId) + ","+ str(self.position) + "," + str(self.target) + "," + str(self.state) + ")"
 
@@ -261,3 +294,14 @@ class Car:
     
     def stop(self):
         self.state = IdleCar
+
+    def notify(self, other):
+        other.free_park_spaces.append(self.free_park_spaces.copy())
+
+    def check_free_parking_spaces(self):
+        fps = []
+        for i in range(self.position.x - 3, self.position.x + 3):
+            for j in range(self.position.y - 3, self.position.y + 3):
+                if(self.city[i, j] == LaneType.FreePark):
+                    fps.append(Position(i, j))
+        return fps
