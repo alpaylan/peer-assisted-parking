@@ -5,6 +5,8 @@ from Position import Position, Direction
 from City import City
 from LaneType import LaneType, Masks
 
+import Logger
+
 class IdleCar:
     @classmethod
     def advance(cls, car: Car):
@@ -76,10 +78,17 @@ class ParkingCar:
 
     @classmethod
     def park(cls, car, park_position):
+        Logger.logCritical("park")
+        
         car.position = park_position
+        Logger.logCritical("Before:" + str(car.state))
+        Logger.logCritical("\n")
         car.state = ParkedCar
+        Logger.logCritical("After:" + str(car.state))
+        Logger.logCritical("\n")
         car.city[car.position.x, car.position.y] = LaneType.FullPark
-
+        Logger.logCritical(str(car.position))
+        
 class MovingCar:
     @classmethod
     def advance(cls, car: Car):
@@ -91,26 +100,10 @@ class MovingCar:
     
     @classmethod
     def calculate_next_position(cls, car):
-        relative_position = cls.calculate_relative_position(car)
+        relative_position = car.calculate_relative_position(car)
         lane_type = car.city.lane_type_of_position(car.position)
         direction = cls.calculate_direction(car, relative_position, lane_type)
         return car.position + direction
-
-    @classmethod
-    def calculate_relative_position(cls, car):
-        relative_position = Position(0, 0)
-
-        if(car.position.x > car.target.x):
-            relative_position.x = -1
-        elif(car.position.x < car.target.x):
-            relative_position.x = 1
-
-        if(car.position.y > car.target.y):
-            relative_position.y = -1
-        elif(car.position.y < car.target.y):
-            relative_position.y = 1
-
-        return relative_position
 
     @classmethod
     def calculate_direction(cls, car: Car, relative_position: Position, lane_type: LaneType):
@@ -123,41 +116,41 @@ class MovingCar:
         elif(lane_type == LaneType.Down):
             return Direction(0, 1)
         else:
-            return cls.turning_direction(car, relative_position, lane_type)
+            return cls.relative_direction(car, relative_position, lane_type)
 
     @classmethod
-    def turning_direction(cls, car: Car, relative_position: Position, lane_type: LaneType):
+    def relative_direction(cls, car: Car, relative_position: Position, lane_type: LaneType):
         if(lane_type == LaneType.RightToDown):
-            """ Move Right or Down"""
+            """ Move Right or Down """
             if(relative_position.x == 1):
                 return Direction(1, 0)
             return Direction(0, 1)
         if(lane_type == LaneType.DownToRight):
-            """ Move Right"""
+            """ Move Right """
             return Direction(1, 0)
         if(lane_type == LaneType.LeftToDown):
-            """ Move Down"""
+            """ Move Down """
             return Direction(0, 1)
         if(lane_type == LaneType.DownToLeft):
-            """ Move Down or Left"""
+            """ Move Down or Left """
             if(relative_position.y == 1):
                 return Direction(0, 1)
             return Direction(-1, 0)
         if(lane_type == LaneType.RightToUp):
-            """ Move Up"""
+            """ Move Up """
             return Direction(0, -1)
         if(lane_type == LaneType.UpToRight):
-            """ Move Up or Right"""
+            """ Move Up or Right """
             if(relative_position.y == -1):
                 return Direction(0, -1)
             return Direction(1, 0)
         if(lane_type == LaneType.LeftToUp):
-            """ Move Left or Up"""
+            """ Move Left or Up """
             if(relative_position.x == -1):
                 return Direction(-1, 0)
             return Direction(0, -1)
         if(lane_type == LaneType.UpToLeft):
-            """ Move Left"""
+            """ Move Left """
             return Direction(-1, 0)
         return Direction(0, 0)
 
@@ -178,40 +171,12 @@ class CirclingCar:
         if(car.circling_time >= 20 and ((lane_type.value & Masks.TW_ROAD_MASK) != 0)):
             direction = cls.forward_direction(car, lane_type)
             """ todo@alpkeles: Tricky hack, get rid of it!! """
-            """ supposed to help with the infinite loop hack """
+            """ supposed to help with the infinite loop hack  """
             if(type == "adv"):
                 car.circling_time = 0
         else:   
             direction = cls.calculate_direction(car, lane_type)
         return car.position + direction
-
-    @classmethod
-    def calculate_relative_position(cls, car: Car):
-        """
-               0,-1
-                |
-        -1,-1   |   1, -1
-                |
-     -1,0 ------c------ 1, 0
-                |
-        -1, 1   |   1, 1
-                |
-               0,1
-        """
-
-        relative_position = Position(0, 0)
-
-        if(car.position.x > car.target.x):
-            relative_position.x = -1
-        elif(car.position.x < car.target.x):
-            relative_position.x = 1
-
-        if(car.position.y > car.target.y):
-            relative_position.y = -1
-        elif(car.position.y < car.target.y):
-            relative_position.y = 1
-
-        return relative_position
 
     @classmethod
     def calculate_direction(cls, car: Car, lane_type):
@@ -257,30 +222,30 @@ class CirclingCar:
         """
         # Border
         if(lane_type == LaneType.DownToRight):
-            """ Move Right"""
+            """ Move Right """
             return Direction(1, 0)
         if(lane_type == LaneType.RightToUp):
-            """ Move Up"""
+            """ Move Up """
             return Direction(0, -1)
         if(lane_type == LaneType.UpToLeft):
-            """ Move Left"""
+            """ Move Left """
             return Direction(-1, 0)
         if(lane_type == LaneType.LeftToDown):
-            """ Move Down"""
+            """ Move Down """
             return Direction(0, 1)
         
         # Center
         if(lane_type == LaneType.RightToDown):
-            """ Move Down"""
+            """ Move Down """
             return Direction(1, 0)
         if(lane_type == LaneType.DownToLeft):
-            """ Move Left"""
+            """ Move Left """
             return Direction(0, 1)
         if(lane_type == LaneType.LeftToUp):
-            """ Move Up"""
+            """ Move Up """
             return Direction(-1, 0)
         if(lane_type == LaneType.UpToRight):
-            """ Move Right"""
+            """ Move Right """
             return Direction(0, -1)
 
         return Direction(0, 0)
@@ -312,7 +277,7 @@ class Car:
     
     def park(self):
         if(self.state == ParkedCar or self.state == IdleCar):
-            pass
+            return  
         self.state = ParkingCar
     
     def stop(self):
@@ -328,3 +293,30 @@ class Car:
                 if(self.city[i, j] == LaneType.FreePark):
                     fps.append(Position(i, j))
         return fps
+
+    def calculate_relative_position(self, car):
+        """
+               0,-1
+                |
+        -1,-1   |   1, -1
+                |
+     -1,0 ------c------ 1, 0
+                |
+        -1, 1   |   1, 1
+                |
+               0,1
+        """
+
+        relative_position = Position(0, 0)
+
+        if(car.position.x > car.target.x):
+            relative_position.x = -1
+        elif(car.position.x < car.target.x):
+            relative_position.x = 1
+
+        if(car.position.y > car.target.y):
+            relative_position.y = -1
+        elif(car.position.y < car.target.y):
+            relative_position.y = 1
+
+        return relative_position
