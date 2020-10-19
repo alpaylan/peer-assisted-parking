@@ -1,41 +1,54 @@
 from enum import Enum
+from dataclasses import dataclass
+
+class Masks:
+    ROAD_MASK = 0x3f0
+    BUILDING_MASK = 0x400
+    OW_ROAD_MASK = 0x010
+    BORDER_ROAD_MASK = 0x020
+    TW_ROAD_MASK = 0x040
+
 class LaneType(Enum):
     # Roads
+
     # One-Way Roads
-    Right = 0
-    Up = 1
-    Left = 2
-    Down = 3
+    Right = 0x011
+    Up = 0x012
+    Left = 0x014
+    Down = 0x018
+
     # Two-Way Roads
-    RightToUp = 5
-    RightToDown = 100
 
-    LeftToUp = 101
-    LeftToDown = 8
-    
-    UpToLeft = 7
-    UpToRight = 102
-    
-    DownToLeft = 103
-    DownToRight = 6
-    
+    # Border
+    RightToUp = 0x021
+    LeftToDown = 0x022
+    UpToLeft = 0x024
+    DownToRight = 0x028
 
+    # Center
+    RightToDown = 0x041
+    LeftToUp = 0x042
+    UpToRight = 0x044
+    DownToLeft = 0x048
     
-    # Closed Loops
-    InnerLoop = 14
-    OuterLoop = 15
     # Three-Way Roads
-    LeftUpDown = 16
-    RightUpDown = 17
-    UpRightLeft = 18
-    DownRightLeft = 19
+    LeftUpDown = 0x081
+    RightUpDown = 0x082
+    UpRightLeft = 0x084
+    DownRightLeft = 0x088
+
     # Four-Way Road
-    FourWayRoad = 9
+    FourWayRoad = 0x101
+
+    # Closed Loops
+    InnerLoop = 0x201
+    OuterLoop = 0x202
+
     # Fixed Structures
-    FreePark = 10
-    FullPark = 11
-    Building = 12
-    TrafficLight = 13
+    FreePark = 0x401
+    FullPark = 0x402
+    Building = 0x404
+    TrafficLight = 0x408
 
     def __str__(self):
         # Right 
