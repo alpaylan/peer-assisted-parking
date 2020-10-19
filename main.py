@@ -1,4 +1,4 @@
-from time import sleep
+from time import sleep, time, ctime
 from os import system
 from sys import argv
 import curses
@@ -11,6 +11,7 @@ from City import City, CityType
 from Position import Position
 from Simulation import CitySimulation
 
+import Logger
 
 if(len(argv) == 3):
     b_s = argv[1]
@@ -19,6 +20,7 @@ else:
     b_s = 5
     b_n = 5
 def main(stdscr):
+    Logger.startLog()
     sim = CitySimulation(
         building_size = int(b_s),
         building_number = int(b_n),
@@ -66,6 +68,9 @@ def main(stdscr):
         # stdscr.vline(0, 95, '|', 80)
         # stdscr.border(0)
         sim.advance()
+        Logger.logPrintln("Epoch " + str(j))
+        if(len(sim.cars) > 0):
+            Logger.logPrintln(str(sim.cars[0]))
         j += 1            
 if __name__ == "__main__":
     wrapper(main)
