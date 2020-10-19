@@ -78,11 +78,13 @@ class CitySimulation:
                 car.advance()
             
         if(self.car_notification_on):
-            free_park_spaces = car.notify()
-            self.notify_neighbor_cars(car, free_park_spaces)
+            car.free_park_spaces = car.check_free_parking_spaces()
+            self.notify_neighbor_cars(car)
 
-    def notify_neighbor_cars(self, car, free_park_spaces) -> None:
-
+    def notify_neighbor_cars(self, car) -> None:
+        for c in self.cars:
+            if(car.position.euclid(c.position) < self.CAR_NOTIFICATION_RANGE):
+                car.notify(c)
         pass
 
     def print_city(self) -> None:
@@ -97,5 +99,4 @@ class CitySimulation:
 
         for car in self.cars:
             print(car)
-
 
