@@ -3,7 +3,7 @@ from typing import List
 from random import randint
 
 from City import City
-from Car import Car, IdleCar
+from Car import Car, IdleCar, ParkedCar
 from Position import Position, Direction
 
 
@@ -76,11 +76,15 @@ class CitySimulation:
     def calculate(self) -> None:
         next_positions = set()
         for car in self.cars:
+            if car.state == IdleCar or car.state == ParkedCar:
+                continue
             c_pos = set()
             c_pos.add(car.calculate())
             if c_pos.issubset(next_positions) == False:
                 next_positions = next_positions.union(c_pos)
                 car.advance()
+            else:
+                car.waited_epochs += 1
 
         if self.car_notification_on:
             car.free_park_spaces = car.check_free_parking_spaces()
