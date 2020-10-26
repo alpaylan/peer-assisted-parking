@@ -30,7 +30,7 @@ class LaneType(Enum):
     LeftToUp = 0x042
     UpToRight = 0x044
     DownToLeft = 0x048
-    
+
     # Three-Way Roads
     LeftUpDown = 0x081
     RightUpDown = 0x082
@@ -51,30 +51,30 @@ class LaneType(Enum):
     TrafficLight = 0x408
 
     def __str__(self):
-        # Right 
+        # Right
         if(self.value == self.Right.value):
             return u"\u2b62"
-        # Up 
+        # Up
         elif(self.value == self.Up.value):
             return u"\u2b61"
-        # Left 
+        # Left
         elif(self.value == self.Left.value):
             return u"\u2b60"
-        # Down 
+        # Down
         elif(self.value == self.Down.value):
             return u"\u2b63"
 
-        # Free Park 
+        # Free Park
         elif(self.value == self.FreePark.value):
             return "p"
         # Full Park
         elif(self.value == self.FullPark.value):
             return "f"
 
-        # Building 
+        # Building
         elif(self.value == self.Building.value):
             return u"\u2592"
-        # Traffic Light 
+        # Traffic Light
         elif(self.value == self.TrafficLight.value):
             return "!"
 

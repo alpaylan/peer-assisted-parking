@@ -31,7 +31,7 @@ def main(stdscr):
         car_notification_range = 4,
         c_type = CityType.Bordered
     )
-    
+
     stdscr.border(0)
 
     stdscr.refresh()
@@ -76,7 +76,7 @@ def main(stdscr):
         if(len(sim.cars) > 0):
             Logger.logPrintln(str(sim.cars[0]))
 
-        epoch += 1            
+        epoch += 1
 
 if __name__ == "__main__":
     wrapper(main)

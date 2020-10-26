@@ -10,9 +10,9 @@ class Position():
     def __sub__(self, other):
         return Position(self.y - other.y, self.x - other.x)
     def __add__(self, other):
-        return Position(self.y + other.y, self.x + other.x)        
+        return Position(self.y + other.y, self.x + other.x)
     def __str__(self):
-        return "(" + str(self.y) + ", " + str(self.x) + ")" 
+        return "(" + str(self.y) + ", " + str(self.x) + ")"
     def turn(self):
         tmp = self.y
         self.y = self.x
@@ -77,7 +77,7 @@ class Car(object):
         return "(" + str(self.c_pos.x) + "," + str(self.c_pos.y) + ")"
 
     def is_out(self):
-        return (self.c_pos.x <= 0 
+        return (self.c_pos.x <= 0
             or self.c_pos.y <= 0
             or self.c_pos.x >= len(self.grid)
             or self.c_pos.y >= len(self.grid))
@@ -85,7 +85,7 @@ class Car(object):
     def move(self):
         self.calculate_direction()
         return self.c_pos + self.c_dir
-    
+
     def calculate_direction(self):
         print(self.grid[self.c_pos.x][self.c_pos.y])
         if(self.grid[self.c_pos.x][self.c_pos.y] == ">"):
@@ -118,11 +118,8 @@ while True:
             exit(0)
         old_sym[i] = g.grid[i.c_pos.x][i.c_pos.y]
         g.grid[i.c_pos.x][i.c_pos.y] = "c"
-        
+
     os.system("clear")
     print(g)
-    
+
     time.sleep(3)
-
-    
-

@@ -7,7 +7,7 @@ def startLog():
 
     t = str(ctime(time()))
     t = t.replace(" ", "_").replace(":", "_")
- 
+
     session = t
     os.system("mkdir -p logs/" + t)
 

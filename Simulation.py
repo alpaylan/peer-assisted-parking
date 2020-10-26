@@ -46,7 +46,7 @@ class CitySimulation:
         c = Car(carId, start, target, self.city)
         self.cars.append(c)
         return carId
-    
+
     def add_random_car(self):
         border = randint(0, 3)
         pos = randint(0, len(self.city.grid) - 1)
@@ -60,7 +60,7 @@ class CitySimulation:
             return self.add_car(Position(pos, len(self.city.grid) - 1), t_pos)
         elif(border == 3):
             return self.add_car(Position(len(self.city.grid) - 1, pos), t_pos)
-        
+
         return self.add_car(0, 0)
 
     def find_car_with_id(self, carID) -> Car:
@@ -74,7 +74,7 @@ class CitySimulation:
             if(c_pos.issubset(next_positions) == False):
                 next_positions = next_positions.union(c_pos)
                 car.advance()
-            
+
         if(self.car_notification_on):
             car.free_park_spaces = car.check_free_parking_spaces()
             self.notify_neighbor_cars(car)
@@ -92,10 +92,9 @@ class CitySimulation:
             car_position_list.append(car.position)
 
         return self.city.print_city_with_cars(car_position_list)
-        
+
     def print_cars(self) -> str:
         car_str = ""
         for car in self.cars:
             car_str += str(car) + "\n"
         return car_str
-

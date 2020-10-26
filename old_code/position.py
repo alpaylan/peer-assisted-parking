@@ -5,9 +5,9 @@ class Position():
     def __sub__(self, other):
         return Position(self.x - other.x, self.y - other.y)
     def __add__(self, other):
-        return Position(self.x + other.x, self.y + other.y)        
+        return Position(self.x + other.x, self.y + other.y)
     def __str__(self):
-        return "(" + str(self.x) + ", " + str(self.y) + ")" 
+        return "(" + str(self.x) + ", " + str(self.y) + ")"
     def __getitem__(self, key):
         if(key == 0):
             return self.x
@@ -23,4 +23,3 @@ class Position():
 
 
 Direction = Position
-

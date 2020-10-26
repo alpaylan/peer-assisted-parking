@@ -33,7 +33,7 @@ Bordered Grid Example
 
 v < < < < < < < < < < < < <
 v > > > > > > > > > > > v ^
-v ^ 1 2 2 1 v ^ 1 2 2 1 v ^ 
+v ^ 1 2 2 1 v ^ 1 2 2 1 v ^
 v ^ 2 # # 2 v ^ 2 # # 2 v ^
 v ^ 2 # # 2 v ^ 2 # # 2 v ^
 v ^ 1 2 2 1 v ^ 1 2 2 1 v ^
@@ -53,19 +53,19 @@ Line Example
 
 v < < < < < < < < < < <
 v > > > > > > > > > v ^
-v ^ 2 2 1 v ^ 1 2 2 v ^ 
-v ^ # # 2 v ^ 2 # # v ^ 
-v ^ # # 2 v ^ 2 # # v ^ 
-v ^ # # 2 v ^ 2 # # v ^ 
-v ^ # # 1 v ^ 2 # # v ^ 
-v ^ # # 2 v ^ 2 # # v ^ 
-v ^ # # 2 v ^ 2 # # v ^ 
-v ^ # # 2 v ^ 2 # # v ^ 
-v ^ # # 1 v ^ 2 # # v ^ 
-v ^ # # 2 v ^ 2 # # v ^ 
-v ^ # # 2 v ^ 2 # # v ^ 
-v ^ # # 2 v ^ 2 # # v ^ 
-v ^ # # 1 v ^ 1 # # v ^ 
+v ^ 2 2 1 v ^ 1 2 2 v ^
+v ^ # # 2 v ^ 2 # # v ^
+v ^ # # 2 v ^ 2 # # v ^
+v ^ # # 2 v ^ 2 # # v ^
+v ^ # # 1 v ^ 2 # # v ^
+v ^ # # 2 v ^ 2 # # v ^
+v ^ # # 2 v ^ 2 # # v ^
+v ^ # # 2 v ^ 2 # # v ^
+v ^ # # 1 v ^ 2 # # v ^
+v ^ # # 2 v ^ 2 # # v ^
+v ^ # # 2 v ^ 2 # # v ^
+v ^ # # 2 v ^ 2 # # v ^
+v ^ # # 1 v ^ 1 # # v ^
 v ^ < < < < < < < < < ^
 > > > > > > > > > > > ^
 
@@ -93,7 +93,7 @@ class City:
             g_str += "\n"
         g_str = g_str[:len(g_str) - 1]
         return g_str
-    
+
     def print_city_with_cars(self, car_position_list):
         """
         Prints City Grid, adding cars in given positions
@@ -124,14 +124,14 @@ class City:
         """
         (k1, k2) = key
         return self.grid[k2][k1]
-    
+
     def get(self, k1, k2):
         return self.grid[k2][k1]
 
     def __setitem__(self, key, item):
         (k1, k2) = key
         self.grid[k2][k1] = item
-    
+
     def set(self, k1, k2, item):
         self.grid[k2][k1] = item
 
@@ -147,14 +147,14 @@ class City:
 
         def create_empty_grid_line():
             raise NotImplementedError
-        
+
         if(self.type == CityType.Default):
             return create_empty_grid_default()
         if(self.type == CityType.Bordered):
             return create_empty_grid_bordered()
         if(self.type == CityType.Line):
             return create_empty_grid_line()
-            
+
     def lane_type_of_position(self, position: Position):
         return self[position.x, position.y]
 
@@ -164,18 +164,18 @@ class City:
         for i in range(self.building_num):
             for j in range(self.building_num):
                 building_positions.append(self.calculate_building_position(i, j))
-        
+
         return building_positions
-   
+
     def calculate_building_position(self, x, y):
 
         def calculate_building_position_default():
-            return (int(self.building_size/2 + x*(self.building_size + 4)), 
-                    int(self.building_size/2 + y*(self.building_size + 4))) 
+            return (int(self.building_size/2 + x*(self.building_size + 4)),
+                    int(self.building_size/2 + y*(self.building_size + 4)))
 
         def calculate_building_position_bordered():
-            return (int(3 + (self.building_size + 1)//2 + x*(self.building_size + 4)), 
-                    int(3 + (self.building_size + 1)/2 + y*(self.building_size + 4))) 
+            return (int(3 + (self.building_size + 1)//2 + x*(self.building_size + 4)),
+                    int(3 + (self.building_size + 1)/2 + y*(self.building_size + 4)))
 
         def calculate_building_position_line():
             raise NotImplementedError
@@ -196,8 +196,8 @@ class City:
             b_down = int(y + self.building_size/2)
 
             self.mark_building(b_left, b_right, b_up, b_down)
-            self.mark_parking(b_left, b_right, b_up, b_down)   
-            self.mark_lights(b_left, b_right, b_up, b_down)         
+            self.mark_parking(b_left, b_right, b_up, b_down)
+            self.mark_lights(b_left, b_right, b_up, b_down)
             self.mark_roads(b_left, b_right, b_up, b_down)
 
         if(self.type == CityType.Bordered):
@@ -227,7 +227,7 @@ class City:
         self.mark_left(LaneType.Up, 2, b_left, b_right, b_up - 1, b_down + 1)
         self.mark_right(LaneType.Down, 2, b_left, b_right, b_up - 1, b_down + 1)
 
-        
+
         self.mark_grid(b_left - 2, b_up - 2, LaneType.UpToRight)
         self.mark_grid(b_right + 1, b_up - 2, LaneType.RightToDown)
         self.mark_grid(b_left - 2, b_down + 1, LaneType.LeftToUp)
@@ -261,7 +261,7 @@ class City:
         for i in range(b_up, b_down):
             j = b_right + offset - 1
             self.mark_grid(j, i, mark)
-    
+
     def mark_grid(self, x, y, mark):
         if(self.is_inside(x, y)):
             self[x, y] = mark
@@ -274,7 +274,7 @@ class City:
 
         for i in range(1, len(self.grid) - 1):
             if(i % (self.building_size + 4) == 0):
-                self.mark_grid(i, 0, LaneType.LeftToDown)    
+                self.mark_grid(i, 0, LaneType.LeftToDown)
             else:
                 self.mark_grid(i, 0, LaneType.Left)
             if(i % (self.building_size + 4) == 1):

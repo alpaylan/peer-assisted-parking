@@ -9,10 +9,10 @@ class Position:
         return Position(self.x - other.x, self.y - other.y)
 
     def __add__(self, other:Position) -> Position:
-        return Position(self.x + other.x, self.y + other.y)        
+        return Position(self.x + other.x, self.y + other.y)
 
     def __str__(self) -> str:
-        return "(" + str(self.x) + ", " + str(self.y) + ")" 
+        return "(" + str(self.x) + ", " + str(self.y) + ")"
 
     def __getitem__(self, key:int) -> int:
         if(key == 0):
@@ -38,4 +38,3 @@ class Position:
         return ((self.x - other.x)**2 + (self.y - other.y)**2)**0.5
 
 Direction = Position
-

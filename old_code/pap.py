@@ -26,13 +26,13 @@ while True:
             print("Target Reached")
             i.park()
     os.system("clear")
-    print(g_show)    
+    print(g_show)
     time.sleep(1)
 
     for i in car_list:
 
         i.calculate()
-        
+
         if(i.next_out()):
             print("Alarm")
             exit(0)
@@ -40,7 +40,3 @@ while True:
         g_show[i.pos.x, i.pos.y] = i.grid[i.pos.x, i.pos.y]
 
         i.advance()
-
-        
-    
-

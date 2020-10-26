@@ -32,7 +32,7 @@ class Car():
             return Direction(0, 1)
         else:
             return self.dir_target()
-        
+
     def parking_direction(self):
         return Direction(0, 0)
 
@@ -98,7 +98,7 @@ class Car():
                 return Direction(-1, 0)
 
     def next_out(self):
-        return (self.next_pos.x < 0 
+        return (self.next_pos.x < 0
             or self.next_pos.y < 0
             or self.next_pos.x >= len(self.grid.grid)
             or self.next_pos.y >= len(self.grid.grid))

@@ -10,7 +10,7 @@ The problem, as stated in "Cruising for Parking" by Urban Planning Researcher Do
 
 - Waste of fuels, which means both monetary and more importantly climatic waste.
 - Waste of time as people either get late to their businesses or sleep less to come in time
-- Increase in the general stress level of drivers  
+- Increase in the general stress level of drivers
 
 ### Solution
 
