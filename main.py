@@ -13,8 +13,8 @@ from Simulation import CitySimulation
 import Logger
 
 if(len(argv) == 3):
-    b_s = argv[1]
-    b_n = argv[2]
+    b_s = int(argv[1])
+    b_n = int(argv[2])
 else:
     b_s = 3
     b_n = 3
@@ -24,8 +24,8 @@ def main(stdscr):
     Logger.startLog()
 
     sim = CitySimulation(
-        building_size = int(b_s),
-        building_number = int(b_n),
+        building_size = b_s,
+        building_number = b_n,
         number_of_cars = 0,
         car_notification_on = False,
         car_notification_range = 4,

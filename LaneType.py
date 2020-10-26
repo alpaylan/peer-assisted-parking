@@ -63,18 +63,21 @@ class LaneType(Enum):
         # Down 
         elif(self.value == self.Down.value):
             return u"\u2b63"
-        # Park 
+
+        # Free Park 
         elif(self.value == self.FreePark.value):
             return "p"
+        # Full Park
+        elif(self.value == self.FullPark.value):
+            return "f"
+
         # Building 
         elif(self.value == self.Building.value):
             return u"\u2592"
-        # TrafficLight 
+        # Traffic Light 
         elif(self.value == self.TrafficLight.value):
             return "!"
-        # Parked
-        elif(self.value == self.FullPark.value):
-            return "f"
+
         # InnerLoop
         elif(self.value == self.InnerLoop.value):
             return u"\u21ba"
@@ -82,38 +85,50 @@ class LaneType(Enum):
         elif(self.value == self.OuterLoop.value):
             return u"\u21bb"
 
+        # Coming from Right going to Up
         elif(self.value == self.RightToUp.value):
             return u"\u2ba5"
+        # Coming from Right going to Down
         elif(self.value == self.RightToDown.value):
             return u"\u2ba7"
 
+        # Coming from Left going to Up
         elif(self.value == self.LeftToUp.value):
             return u"\u2ba4"
+        # Coming from Left going to Down
         elif(self.value == self.LeftToDown.value):
             return u"\u2ba6"
 
+        # Coming from Up going to Right
         elif(self.value == self.UpToRight.value):
             return u"\u2ba3"
+        # Coming from Down going to Right
         elif(self.value == self.DownToRight.value):
             return u"\u2ba1"
 
+        # Coming from Up going to Left
         elif(self.value == self.UpToLeft.value):
             return u"\u2ba2"
+        # Coming from Down going to Left
         elif(self.value == self.DownToLeft.value):
             return u"\u2ba0"
 
 
-
+        # Can go Left, Up or Down
         elif(self.value == self.LeftUpDown.value):
             return u"\u2ba5"
+        # Can go Right, Up or Down
         elif(self.value == self.RightUpDown.value):
             return "x"
+        # Can go Up, Right or Left
         elif(self.value == self.UpRightLeft.value):
             return "x"
+        # Can go Down, Right or Left
         elif(self.value == self.DownRightLeft.value):
             return "x"
+        # Can go all four ways
         elif(self.value == self.FourWayRoad.value):
             return "x"
-        # None
+        # Unknown lane type, probably bug.
         else:
             return "?"

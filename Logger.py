@@ -30,13 +30,11 @@ def logDebug(message):
     opt = {"type": "debug"}
     log(message, opt)
 
-
 def log(message, options):
     global session
     f = open("logs/" + session + "/log_" + options["type"] + ".txt", "a")
     f.write(message)
     f.close()
-    pass
 
 def clr_log():
     global session

@@ -40,7 +40,6 @@ class CitySimulation:
         if(car == None):
             print("Car with carID: {} not found. Exiting.", carId)
             exit(0)
-        car.stop()
 
     def add_car(self, start: Position, target: Position) -> int:
         carId = len(self.cars)
@@ -69,7 +68,6 @@ class CitySimulation:
 
     def calculate(self) -> None:
         next_positions = set()
-
         for car in self.cars:
             c_pos = set()
             c_pos.add(car.calculate())

@@ -84,6 +84,7 @@ class City:
         self.building_positions = self.calculate_building_positions()
         self.grid = self.create_empty_grid()
         self.create_grid()
+
     def __str__(self) -> str:
         g_str = ""
         for i in range(len(self.grid)):
@@ -159,6 +160,7 @@ class City:
 
     def calculate_building_positions(self):
         building_positions = []
+
         for i in range(self.building_num):
             for j in range(self.building_num):
                 building_positions.append(self.calculate_building_position(i, j))
@@ -196,7 +198,8 @@ class City:
             self.mark_building(b_left, b_right, b_up, b_down)
             self.mark_parking(b_left, b_right, b_up, b_down)   
             self.mark_lights(b_left, b_right, b_up, b_down)         
-            self.mark_roads(b_left, b_right, b_up, b_down) 
+            self.mark_roads(b_left, b_right, b_up, b_down)
+
         if(self.type == CityType.Bordered):
             self.mark_outer_ring()
 
@@ -289,8 +292,10 @@ class City:
 
     def num_free_park_spaces(self, x, y):
         count = 0
+
         for i in range(x - (self.building_size + 1)//2 - 1, x + (self.building_size + 1)//2 + 1):
             for j in range(y - (self.building_size + 1)//2 - 1, y + (self.building_size + 1)//2 + 1):
                 if(self[i, j] == LaneType.FreePark):
                     count += 1
+
         return count
