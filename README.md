@@ -23,3 +23,5 @@ City grid is given as a command line argument such that:
 '''a''' command adds 1 car.
 
 Number keys from 1 to 9 generate that amount of car when hit.
+
+Before entering the command, please get a full sized bash window.
