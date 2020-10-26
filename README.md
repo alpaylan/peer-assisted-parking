@@ -18,7 +18,7 @@ Currently, the code adds random cars with random building as targets and the car
 
 City grid is given as a command line argument such that:
 
-'''python main.py 4 3''' generates a city with 3x3 with buildings of size 4x4.
+'''python main.py 4 3''' generates a city of 3x3 with buildings of size 4x4.
 
 '''a''' command adds 1 car.
 
