@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
-from time import sleep, time, ctime
-from os import system
 from sys import argv
 import curses
 from curses import wrapper
-from curses.textpad import Textbox, rectangle
 
-from Car import Car
-from City import City, CityType
-from Position import Position
+from City import CityType
 from Simulation import CitySimulation
 
 import Logger
