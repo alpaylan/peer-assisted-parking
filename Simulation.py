@@ -17,7 +17,10 @@ class CitySimulation:
         self.car_notification_on = kwargs["car_notification_on"]
         self.CAR_NOTIFICATION_RANGE = kwargs["car_notification_range"]
         self.RANDOM_SEED = kwargs["random_seed"]
-        seed(self.RANDOM_SEED)
+        if self.RANDOM_SEED == None:
+            seed()
+        else:
+            seed(self.RANDOM_SEED)
 
     def advance(self) -> None:
         self.calculate()

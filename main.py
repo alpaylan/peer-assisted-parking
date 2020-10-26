@@ -8,12 +8,17 @@ from Simulation import CitySimulation
 
 import Logger
 
-if len(argv) == 3:
+RANDOM_SEED = None
+
+if len(argv) >= 3:
     b_s = int(argv[1])
     b_n = int(argv[2])
 else:
     b_s = 3
     b_n = 3
+
+if len(argv) == 4:
+    RANDOM_SEED = int(argv[3])
 
 
 def main(stdscr):
@@ -27,7 +32,7 @@ def main(stdscr):
         car_notification_on=False,
         car_notification_range=4,
         c_type=CityType.Bordered,
-        random_seed=42,
+        random_seed=RANDOM_SEED,
     )
 
     stdscr.border(0)
