@@ -33,19 +33,15 @@ class ParkingCar:
             cls.park(car, cls.park_position(car))
 
         else:
-            car.state = CirclingCar
-            car.advance()
-            car.state = ParkingCar
+            car.position = cls.calculate_next_position(car, "adv")
+            car.circling_time += 1
 
     @classmethod
     def calculate(cls, car: Car) -> Position:
         if cls.check_sides(car) == True:
             return cls.park_position(car)
         else:
-            car.state = CirclingCar
-            calculated_position = car.calculate()
-            car.state = ParkingCar
-            return calculated_position
+            return cls.calculate_next_position(car, "calc")
 
     @classmethod
     def check_sides(cls, car):
@@ -87,87 +83,6 @@ class ParkingCar:
         car.position = park_position
         car.state = ParkedCar
         car.city[car.position.x, car.position.y] = LaneType.FullPark
-
-
-class MovingCar:
-    @classmethod
-    def advance(cls, car: Car):
-        car.position = cls.calculate_next_position(car)
-
-    @classmethod
-    def calculate(cls, car: Car) -> Position:
-        return cls.calculate_next_position(car)
-
-    @classmethod
-    def calculate_next_position(cls, car):
-        relative_position = car.calculate_relative_position(car)
-        lane_type = car.city.lane_type_of_position(car.position)
-        direction = cls.calculate_direction(car, relative_position, lane_type)
-        return car.position + direction
-
-    @classmethod
-    def calculate_direction(
-        cls, car: Car, relative_position: Position, lane_type: LaneType
-    ):
-        if lane_type == LaneType.Right:
-            return Direction(1, 0)
-        elif lane_type == LaneType.Left:
-            return Direction(-1, 0)
-        elif lane_type == LaneType.Up:
-            return Direction(0, -1)
-        elif lane_type == LaneType.Down:
-            return Direction(0, 1)
-        else:
-            return cls.relative_direction(car, relative_position, lane_type)
-
-    @classmethod
-    def relative_direction(
-        cls, car: Car, relative_position: Position, lane_type: LaneType
-    ):
-        if lane_type == LaneType.RightToDown:
-            """ Move Right or Down """
-            if relative_position.x == 1:
-                return Direction(1, 0)
-            return Direction(0, 1)
-        if lane_type == LaneType.DownToRight:
-            """ Move Right """
-            return Direction(1, 0)
-        if lane_type == LaneType.LeftToDown:
-            """ Move Down """
-            return Direction(0, 1)
-        if lane_type == LaneType.DownToLeft:
-            """ Move Down or Left """
-            if relative_position.y == 1:
-                return Direction(0, 1)
-            return Direction(-1, 0)
-        if lane_type == LaneType.RightToUp:
-            """ Move Up """
-            return Direction(0, -1)
-        if lane_type == LaneType.UpToRight:
-            """ Move Up or Right """
-            if relative_position.y == -1:
-                return Direction(0, -1)
-            return Direction(1, 0)
-        if lane_type == LaneType.LeftToUp:
-            """ Move Left or Up """
-            if relative_position.x == -1:
-                return Direction(-1, 0)
-            return Direction(0, -1)
-        if lane_type == LaneType.UpToLeft:
-            """ Move Left """
-            return Direction(-1, 0)
-        return Direction(0, 0)
-
-
-class CirclingCar:
-    @classmethod
-    def advance(cls, car: Car):
-        car.position = cls.calculate_next_position(car, "adv")
-        car.circling_time += 1
-
-    @classmethod
-    def calculate(cls, car: Car) -> Position:
-        return cls.calculate_next_position(car, "calc")
 
     @classmethod
     def calculate_next_position(cls, car: Car, type):
@@ -250,6 +165,76 @@ class CirclingCar:
             """ Move Right """
             return Direction(0, -1)
 
+        return Direction(0, 0)
+
+
+class MovingCar:
+    @classmethod
+    def advance(cls, car: Car):
+        car.position = cls.calculate_next_position(car)
+
+    @classmethod
+    def calculate(cls, car: Car) -> Position:
+        return cls.calculate_next_position(car)
+
+    @classmethod
+    def calculate_next_position(cls, car):
+        relative_position = car.calculate_relative_position(car)
+        lane_type = car.city.lane_type_of_position(car.position)
+        direction = cls.calculate_direction(car, relative_position, lane_type)
+        return car.position + direction
+
+    @classmethod
+    def calculate_direction(
+        cls, car: Car, relative_position: Position, lane_type: LaneType
+    ):
+        if lane_type == LaneType.Right:
+            return Direction(1, 0)
+        elif lane_type == LaneType.Left:
+            return Direction(-1, 0)
+        elif lane_type == LaneType.Up:
+            return Direction(0, -1)
+        elif lane_type == LaneType.Down:
+            return Direction(0, 1)
+        else:
+            return cls.relative_direction(car, relative_position, lane_type)
+
+    @classmethod
+    def relative_direction(
+        cls, car: Car, relative_position: Position, lane_type: LaneType
+    ):
+        if lane_type == LaneType.RightToDown:
+            """ Move Right or Down """
+            if relative_position.x == 1:
+                return Direction(1, 0)
+            return Direction(0, 1)
+        if lane_type == LaneType.DownToRight:
+            """ Move Right """
+            return Direction(1, 0)
+        if lane_type == LaneType.LeftToDown:
+            """ Move Down """
+            return Direction(0, 1)
+        if lane_type == LaneType.DownToLeft:
+            """ Move Down or Left """
+            if relative_position.y == 1:
+                return Direction(0, 1)
+            return Direction(-1, 0)
+        if lane_type == LaneType.RightToUp:
+            """ Move Up """
+            return Direction(0, -1)
+        if lane_type == LaneType.UpToRight:
+            """ Move Up or Right """
+            if relative_position.y == -1:
+                return Direction(0, -1)
+            return Direction(1, 0)
+        if lane_type == LaneType.LeftToUp:
+            """ Move Left or Up """
+            if relative_position.x == -1:
+                return Direction(-1, 0)
+            return Direction(0, -1)
+        if lane_type == LaneType.UpToLeft:
+            """ Move Left """
+            return Direction(-1, 0)
         return Direction(0, 0)
 
 
