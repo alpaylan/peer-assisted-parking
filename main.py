@@ -21,6 +21,38 @@ if len(argv) == 4:
     RANDOM_SEED = int(argv[3])
 
 
+def cursesGreet(stdscr):
+
+    stdscr.border(0)
+
+    stdscr.refresh()
+
+    stdscr.addstr(
+        6,
+        stdscr.getmaxyx()[1] // 2 - 18,
+        "Welcome to Keles City Simulation",
+        curses.A_BOLD,
+    )
+
+    _ = stdscr.getch()
+
+
+def cursesPrint(stdscr, sim, epoch):
+    stdscr.clear()
+
+    stdscr.addstr(1, stdscr.getmaxyx()[1] // 2 - 3, "Epoch" + str(epoch), curses.A_BOLD)
+
+    lines = str(sim.print_city()).split("\n")
+
+    for i in range(len(lines)):
+        stdscr.addstr(
+            i + 5,
+            stdscr.getmaxyx()[1] // 2 - len(lines[i]) // 2,
+            lines[i],
+            curses.A_BOLD,
+        )
+
+
 def main(stdscr):
 
     Logger.startLog()
@@ -35,26 +67,18 @@ def main(stdscr):
         random_seed=RANDOM_SEED,
     )
 
-    stdscr.border(0)
+    use_curses = True
 
-    stdscr.refresh()
-
-    stdscr.addstr(
-        6,
-        stdscr.getmaxyx()[1] // 2 - 18,
-        "Welcome to Keles City Simulation",
-        curses.A_BOLD,
-    )
-
-    ch = stdscr.getch()
+    if use_curses:
+        cursesGreet(stdscr)
+    else:
+        curses.endwin()
 
     epoch = 0
     while True:
         stdscr.timeout(400)
 
         ch = stdscr.getch()
-
-        stdscr.move(0, 95)
 
         if ch == ord("q"):
             break
@@ -68,21 +92,8 @@ def main(stdscr):
                 _ = sim.add_random_car()
             sim.activate_cars()
 
-        stdscr.clear()
-
-        stdscr.addstr(
-            1, stdscr.getmaxyx()[1] // 2 - 3, "Epoch" + str(epoch), curses.A_BOLD
-        )
-
-        lines = str(sim.print_city()).split("\n")
-
-        for i in range(len(lines)):
-            stdscr.addstr(
-                i + 5,
-                stdscr.getmaxyx()[1] // 2 - len(lines[i]) // 2,
-                lines[i],
-                curses.A_BOLD,
-            )
+        if use_curses:
+            cursesPrint(stdscr, sim, epoch)
 
         sim.advance()
 
