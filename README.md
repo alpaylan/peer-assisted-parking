@@ -18,18 +18,18 @@ Currently, the code adds random cars with random building as targets and the car
 
 City grid is given as a command line argument such that:
 
-''' python main.py 4 3 ''' generates a city of 3x3 with buildings of size 4x4.
+`python main.py 4 3` generates a city of 3x3 with buildings of size 4x4.
 
 Random seed is given as the 3rd command line argument for controlled experiments.
 
-''' python main.py 4 3 42 ''' generates a simulation using random seed 42. This allows replication of car generation sequences throughout different simulations.
+`python main.py 4 3 42` generates a simulation using random seed 42. This allows replication of car generation sequences throughout different simulations.
 
-'''a''' command adds 1 car.
+`a` command adds 1 car.
 
-Number keys from 1 to 9 generate that amount of car when hit.
+Number keys from `1` to `9` generate that amount of car when hit.
 
-q, ctrl+c or ctrl+d command ends the simulation.
+`q`, `ctrl+c` or `ctrl+d` command ends the simulation.
 
 Before entering the command, please get a full sized bash window.
 
-Project works in python versions >= 3.7
+Project works in **python versions >= 3.7**
