@@ -80,16 +80,12 @@ def main(stdscr):
 
         sim.advance()
 
-        Logger.logPrintln("Epoch " + str(epoch))
-
-        if len(sim.cars) > 0:
-            Logger.logPrintln(str(sim.cars[0]))
-
         epoch += 1
 
     for car in sim.cars:
-        Logger.logResult(str(car.carId) + ":" + str(car.waited_epochs))
-        Logger.logResult("\n")
+        if car.waited_epochs != 0:
+            Logger.logResult(str(car.carId) + ":" + str(car.waited_epochs))
+            Logger.logResult("\n")
 
 
 if __name__ == "__main__":

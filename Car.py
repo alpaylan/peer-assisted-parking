@@ -5,8 +5,6 @@ from Position import Position, Direction
 from City import City
 from LaneType import LaneType, Masks
 
-import Logger
-
 
 class IdleCar:
     @classmethod
@@ -85,16 +83,10 @@ class ParkingCar:
 
     @classmethod
     def park(cls, car, park_position):
-        Logger.logCritical("park")
 
         car.position = park_position
-        Logger.logCritical("Before:" + str(car.state))
-        Logger.logCritical("\n")
         car.state = ParkedCar
-        Logger.logCritical("After:" + str(car.state))
-        Logger.logCritical("\n")
         car.city[car.position.x, car.position.y] = LaneType.FullPark
-        Logger.logCritical(str(car.position))
 
 
 class MovingCar:
