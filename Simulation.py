@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from typing import List
-from random import randint
+from random import randint, seed
 
 from City import City
 from Car import Car, IdleCar, ParkedCar
@@ -16,6 +16,8 @@ class CitySimulation:
         self.cars: List[Car] = []
         self.car_notification_on = kwargs["car_notification_on"]
         self.CAR_NOTIFICATION_RANGE = kwargs["car_notification_range"]
+        self.RANDOM_SEED = kwargs["random_seed"]
+        seed(self.RANDOM_SEED)
 
     def advance(self) -> None:
         self.calculate()

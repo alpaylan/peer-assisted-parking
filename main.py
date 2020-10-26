@@ -27,6 +27,7 @@ def main(stdscr):
         car_notification_on=False,
         car_notification_range=4,
         c_type=CityType.Bordered,
+        random_seed=42,
     )
 
     stdscr.border(0)
