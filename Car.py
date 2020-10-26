@@ -270,6 +270,7 @@ class Car:
         self.state = IdleCar
         self.free_park_spaces = []
         self.circling_time = 0
+        self.waited_epochs = 0
 
     def __str__(self):
         return (
