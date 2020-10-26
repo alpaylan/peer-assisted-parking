@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
 from grid import *
 from position import *
 from car import *
 import copy
 import os
 import time
+
 # Grid is created.
 g = Grid(28, 28, 4)
 g_show = copy.deepcopy(g)
@@ -22,7 +24,7 @@ while True:
     for i in car_list:
         g_show[i.pos.x, i.pos.y] = "c"
         print(i.pos, i.target)
-        if(i.pos == i.target):
+        if i.pos == i.target:
             print("Target Reached")
             i.park()
     os.system("clear")
@@ -33,7 +35,7 @@ while True:
 
         i.calculate()
 
-        if(i.next_out()):
+        if i.next_out():
             print("Alarm")
             exit(0)
 

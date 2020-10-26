@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 from position import *
 from enum import Enum
+
 
 class CarMode(Enum):
     idle = 0
@@ -7,7 +9,8 @@ class CarMode(Enum):
     parking = 2
     parked = 3
 
-class Car():
+
+class Car:
     def __init__(self, x1, y1, x2, y2, grid):
         self.pos = Position(x1, y1)
         self.target = Position(x2, y2)
@@ -22,13 +25,13 @@ class Car():
         return "(" + str(self.pos[0]) + "," + str(self.pos[1]) + ")"
 
     def moving_direction(self):
-        if(self.grid[self.pos[0], self.pos[1]] == ">"):
+        if self.grid[self.pos[0], self.pos[1]] == ">":
             return Direction(1, 0)
-        elif(self.grid[self.pos[0], self.pos[1]] == "<"):
+        elif self.grid[self.pos[0], self.pos[1]] == "<":
             return Direction(-1, 0)
-        elif(self.grid[self.pos[0], self.pos[1]] == "^"):
+        elif self.grid[self.pos[0], self.pos[1]] == "^":
             return Direction(0, -1)
-        elif(self.grid[self.pos[0], self.pos[1]] == "v"):
+        elif self.grid[self.pos[0], self.pos[1]] == "v":
             return Direction(0, 1)
         else:
             return self.dir_target()
@@ -36,10 +39,10 @@ class Car():
     def parking_direction(self):
         return Direction(0, 0)
 
-    def direction (self):
-        if(self.mode == CarMode.moving):
+    def direction(self):
+        if self.mode == CarMode.moving:
             return self.moving_direction()
-        elif(self.mode == CarMode.parking):
+        elif self.mode == CarMode.parking:
             return self.parking_direction()
         else:
             return Direction(0, 0)
@@ -47,61 +50,71 @@ class Car():
     def dir_target(self):
         relative_positioning = Position(0, 0)
 
-        if(self.pos.x > self.target.x):
+        if self.pos.x > self.target.x:
             relative_positioning.x = -1
-        elif(self.pos.x < self.target.x):
+        elif self.pos.x < self.target.x:
             relative_positioning.x = 1
 
-        if(self.pos.y > self.target.y):
+        if self.pos.y > self.target.y:
             relative_positioning.y = -1
-        elif(self.pos.y < self.target.y):
+        elif self.pos.y < self.target.y:
             relative_positioning.y = 1
 
         # There are 4 cases
-        if(relative_positioning == Position(0, 0)):
+        if relative_positioning == Position(0, 0):
             return Direction(0, 0)
         # Upper Right X
-        elif(self.grid[self.pos.x - 1, self.pos.y] == "x"
-            and self.grid[self.pos.x, self.pos.y + 1] == "x"):
-            if(relative_positioning.y == -1):   # Go Up
+        elif (
+            self.grid[self.pos.x - 1, self.pos.y] == "x"
+            and self.grid[self.pos.x, self.pos.y + 1] == "x"
+        ):
+            if relative_positioning.y == -1:  # Go Up
                 return Direction(0, -1)
-            elif(relative_positioning.x == -1): # Go Left
+            elif relative_positioning.x == -1:  # Go Left
                 return Direction(-1, 0)
-            else:                               # Go Below
+            else:  # Go Below
                 return Direction(0, 1)
         # Upper Left X
-        elif(self.grid[self.pos.x + 1, self.pos.y] == "x"
-            and self.grid[self.pos.x, self.pos.y + 1] == "x"):
-            if(relative_positioning.x == -1):   # Go Left
+        elif (
+            self.grid[self.pos.x + 1, self.pos.y] == "x"
+            and self.grid[self.pos.x, self.pos.y + 1] == "x"
+        ):
+            if relative_positioning.x == -1:  # Go Left
                 return Direction(-1, 0)
-            elif(relative_positioning.y == 1):  # Go Below
+            elif relative_positioning.y == 1:  # Go Below
                 return Direction(0, 1)
-            else:                               # Go Right
+            else:  # Go Right
                 return Direction(1, 0)
         # Lower Left X
-        elif(self.grid[self.pos.x + 1, self.pos.y] == "x"
-            and self.grid[self.pos.x, self.pos.y - 1] == "x"):
-            if(relative_positioning.y == 1):    # Go Below
+        elif (
+            self.grid[self.pos.x + 1, self.pos.y] == "x"
+            and self.grid[self.pos.x, self.pos.y - 1] == "x"
+        ):
+            if relative_positioning.y == 1:  # Go Below
                 return Direction(0, 1)
-            elif(relative_positioning.x == 1):  # Go Right
+            elif relative_positioning.x == 1:  # Go Right
                 return Direction(1, 0)
-            else:                               # Go Up
+            else:  # Go Up
                 return Direction(0, -1)
         # Lower Right X
-        elif(self.grid[self.pos.x - 1, self.pos.y] == "x"
-            and self.grid[self.pos.x, self.pos.y - 1] == "x"):
-            if(relative_positioning.x == 1):    # Go Right
+        elif (
+            self.grid[self.pos.x - 1, self.pos.y] == "x"
+            and self.grid[self.pos.x, self.pos.y - 1] == "x"
+        ):
+            if relative_positioning.x == 1:  # Go Right
                 return Direction(1, 0)
-            elif(relative_positioning.y == -1): # Go Up
+            elif relative_positioning.y == -1:  # Go Up
                 return Direction(0, -1)
-            else:                               # Go Left
+            else:  # Go Left
                 return Direction(-1, 0)
 
     def next_out(self):
-        return (self.next_pos.x < 0
+        return (
+            self.next_pos.x < 0
             or self.next_pos.y < 0
             or self.next_pos.x >= len(self.grid.grid)
-            or self.next_pos.y >= len(self.grid.grid))
+            or self.next_pos.y >= len(self.grid.grid)
+        )
 
     def calculate(self):
         self.dir = self.direction()

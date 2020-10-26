@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from typing import List
 from random import randint
 
@@ -5,9 +6,12 @@ from City import City
 from Car import Car, IdleCar
 from Position import Position, Direction
 
+
 class CitySimulation:
     def __init__(self, **kwargs):
-        self.city = City(kwargs["building_size"], kwargs["building_number"], kwargs["c_type"])
+        self.city = City(
+            kwargs["building_size"], kwargs["building_number"], kwargs["c_type"]
+        )
         self.car_num = kwargs["number_of_cars"]
         self.cars: List[Car] = []
         self.car_notification_on = kwargs["car_notification_on"]
@@ -16,10 +20,10 @@ class CitySimulation:
     def advance(self) -> None:
         self.calculate()
 
-    def print(self, p_type = "city") -> None:
-        if(p_type == "city"):
+    def print(self, p_type="city") -> None:
+        if p_type == "city":
             self.print_city()
-        elif(p_type == "cars"):
+        elif p_type == "cars":
             self.print_cars()
         else:
             self.print_city()
@@ -30,14 +34,14 @@ class CitySimulation:
 
     def activate_car(self, carId) -> None:
         car = self.find_car_with_id(carId)
-        if(car == None):
+        if car == None:
             print("Car with carID: {} not found. Exiting.", carId)
             exit(0)
         car.move()
 
     def deactivate_car(self, carId) -> None:
         car = self.find_car_with_id(carId)
-        if(car == None):
+        if car == None:
             print("Car with carID: {} not found. Exiting.", carId)
             exit(0)
 
@@ -51,14 +55,17 @@ class CitySimulation:
         border = randint(0, 3)
         pos = randint(0, len(self.city.grid) - 1)
         target_building = randint(0, len(self.city.building_positions) - 1)
-        t_pos = Position(self.city.building_positions[target_building][0], self.city.building_positions[target_building][1])
-        if(border == 0):
+        t_pos = Position(
+            self.city.building_positions[target_building][0],
+            self.city.building_positions[target_building][1],
+        )
+        if border == 0:
             return self.add_car(Position(pos, 0), t_pos)
-        elif(border == 1):
+        elif border == 1:
             return self.add_car(Position(0, pos), t_pos)
-        elif(border == 2):
+        elif border == 2:
             return self.add_car(Position(pos, len(self.city.grid) - 1), t_pos)
-        elif(border == 3):
+        elif border == 3:
             return self.add_car(Position(len(self.city.grid) - 1, pos), t_pos)
 
         return self.add_car(0, 0)
@@ -71,17 +78,17 @@ class CitySimulation:
         for car in self.cars:
             c_pos = set()
             c_pos.add(car.calculate())
-            if(c_pos.issubset(next_positions) == False):
+            if c_pos.issubset(next_positions) == False:
                 next_positions = next_positions.union(c_pos)
                 car.advance()
 
-        if(self.car_notification_on):
+        if self.car_notification_on:
             car.free_park_spaces = car.check_free_parking_spaces()
             self.notify_neighbor_cars(car)
 
     def notify_neighbor_cars(self, car) -> None:
         for c in self.cars:
-            if(car.position.euclid(c.position) < self.CAR_NOTIFICATION_RANGE):
+            if car.position.euclid(c.position) < self.CAR_NOTIFICATION_RANGE:
                 car.notify(c)
         pass
 

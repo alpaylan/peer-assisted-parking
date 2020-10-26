@@ -1,12 +1,15 @@
+# -*- coding: utf-8 -*-
 from enum import Enum
 from dataclasses import dataclass
 
+
 class Masks:
-    ROAD_MASK = 0x3f0
+    ROAD_MASK = 0x3F0
     BUILDING_MASK = 0x400
     OW_ROAD_MASK = 0x010
     BORDER_ROAD_MASK = 0x020
     TW_ROAD_MASK = 0x040
+
 
 class LaneType(Enum):
     # Roads
@@ -52,82 +55,81 @@ class LaneType(Enum):
 
     def __str__(self):
         # Right
-        if(self.value == self.Right.value):
+        if self.value == self.Right.value:
             return u"\u2b62"
         # Up
-        elif(self.value == self.Up.value):
+        elif self.value == self.Up.value:
             return u"\u2b61"
         # Left
-        elif(self.value == self.Left.value):
+        elif self.value == self.Left.value:
             return u"\u2b60"
         # Down
-        elif(self.value == self.Down.value):
+        elif self.value == self.Down.value:
             return u"\u2b63"
 
         # Free Park
-        elif(self.value == self.FreePark.value):
+        elif self.value == self.FreePark.value:
             return "p"
         # Full Park
-        elif(self.value == self.FullPark.value):
+        elif self.value == self.FullPark.value:
             return "f"
 
         # Building
-        elif(self.value == self.Building.value):
+        elif self.value == self.Building.value:
             return u"\u2592"
         # Traffic Light
-        elif(self.value == self.TrafficLight.value):
+        elif self.value == self.TrafficLight.value:
             return "!"
 
         # InnerLoop
-        elif(self.value == self.InnerLoop.value):
+        elif self.value == self.InnerLoop.value:
             return u"\u21ba"
         # OuterLoop
-        elif(self.value == self.OuterLoop.value):
+        elif self.value == self.OuterLoop.value:
             return u"\u21bb"
 
         # Coming from Right going to Up
-        elif(self.value == self.RightToUp.value):
+        elif self.value == self.RightToUp.value:
             return u"\u2ba5"
         # Coming from Right going to Down
-        elif(self.value == self.RightToDown.value):
+        elif self.value == self.RightToDown.value:
             return u"\u2ba7"
 
         # Coming from Left going to Up
-        elif(self.value == self.LeftToUp.value):
+        elif self.value == self.LeftToUp.value:
             return u"\u2ba4"
         # Coming from Left going to Down
-        elif(self.value == self.LeftToDown.value):
+        elif self.value == self.LeftToDown.value:
             return u"\u2ba6"
 
         # Coming from Up going to Right
-        elif(self.value == self.UpToRight.value):
+        elif self.value == self.UpToRight.value:
             return u"\u2ba3"
         # Coming from Down going to Right
-        elif(self.value == self.DownToRight.value):
+        elif self.value == self.DownToRight.value:
             return u"\u2ba1"
 
         # Coming from Up going to Left
-        elif(self.value == self.UpToLeft.value):
+        elif self.value == self.UpToLeft.value:
             return u"\u2ba2"
         # Coming from Down going to Left
-        elif(self.value == self.DownToLeft.value):
+        elif self.value == self.DownToLeft.value:
             return u"\u2ba0"
 
-
         # Can go Left, Up or Down
-        elif(self.value == self.LeftUpDown.value):
+        elif self.value == self.LeftUpDown.value:
             return u"\u2ba5"
         # Can go Right, Up or Down
-        elif(self.value == self.RightUpDown.value):
+        elif self.value == self.RightUpDown.value:
             return "x"
         # Can go Up, Right or Left
-        elif(self.value == self.UpRightLeft.value):
+        elif self.value == self.UpRightLeft.value:
             return "x"
         # Can go Down, Right or Left
-        elif(self.value == self.DownRightLeft.value):
+        elif self.value == self.DownRightLeft.value:
             return "x"
         # Can go all four ways
-        elif(self.value == self.FourWayRoad.value):
+        elif self.value == self.FourWayRoad.value:
             return "x"
         # Unknown lane type, probably bug.
         else:

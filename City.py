@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from enum import Enum
 
 from Position import Position
 from LaneType import LaneType
+
 """
 A city is an object that contains roads and building.
 There are three types of cities.
@@ -71,13 +73,17 @@ v ^ < < < < < < < < < ^
 
 """
 
+
 class CityType(Enum):
     Default = 0
     Bordered = 1
     Line = 2
 
+
 class City:
-    def __init__(self, b_size:int = 1, b_num:int = 1, c_type = CityType.Default) -> None:
+    def __init__(
+        self, b_size: int = 1, b_num: int = 1, c_type=CityType.Default
+    ) -> None:
         self.type = c_type
         self.building_size = b_size
         self.building_num = b_num
@@ -91,7 +97,7 @@ class City:
             for j in range(len(self.grid[0])):
                 g_str += str(self.grid[i][j]) + " "
             g_str += "\n"
-        g_str = g_str[:len(g_str) - 1]
+        g_str = g_str[: len(g_str) - 1]
         return g_str
 
     def print_city_with_cars(self, car_position_list):
@@ -106,16 +112,18 @@ class City:
         for i in range(len(self.grid)):
             g_str += str(i).ljust(4)
             for j in range(len(self.grid[0])):
-                if(Position(j, i) in car_position_list):
-                    g_str += ("c" + str(car_position_list.index(Position(j, i)))).ljust(4)
-                elif((j + 1, i + 1) in self.building_positions):
-                    g_str += str(self.num_free_park_spaces(j+1, i+1)).ljust(4)
-                elif(self.grid[i][j] == LaneType.Building):
+                if Position(j, i) in car_position_list:
+                    g_str += ("c" + str(car_position_list.index(Position(j, i)))).ljust(
+                        4
+                    )
+                elif (j + 1, i + 1) in self.building_positions:
+                    g_str += str(self.num_free_park_spaces(j + 1, i + 1)).ljust(4)
+                elif self.grid[i][j] == LaneType.Building:
                     g_str += str(self.grid[i][j]).ljust(4, str(self.grid[i][j]))
                 else:
                     g_str += str(self.grid[i][j]).ljust(4)
             g_str += "\n"
-        g_str = g_str[:len(g_str) - 1]
+        g_str = g_str[: len(g_str) - 1]
         return g_str
 
     def __getitem__(self, key):
@@ -136,23 +144,22 @@ class City:
         self.grid[k2][k1] = item
 
     def create_empty_grid(self):
-
         def create_empty_grid_default():
-            size = (self.building_size + 4)*self.building_num - 4
+            size = (self.building_size + 4) * self.building_num - 4
             return [[0 for _ in range(size)] for _ in range(size)]
 
         def create_empty_grid_bordered():
-            size = (self.building_size + 4)*self.building_num + 2
+            size = (self.building_size + 4) * self.building_num + 2
             return [[0 for _ in range(size)] for _ in range(size)]
 
         def create_empty_grid_line():
             raise NotImplementedError
 
-        if(self.type == CityType.Default):
+        if self.type == CityType.Default:
             return create_empty_grid_default()
-        if(self.type == CityType.Bordered):
+        if self.type == CityType.Bordered:
             return create_empty_grid_bordered()
-        if(self.type == CityType.Line):
+        if self.type == CityType.Line:
             return create_empty_grid_line()
 
     def lane_type_of_position(self, position: Position):
@@ -168,39 +175,42 @@ class City:
         return building_positions
 
     def calculate_building_position(self, x, y):
-
         def calculate_building_position_default():
-            return (int(self.building_size/2 + x*(self.building_size + 4)),
-                    int(self.building_size/2 + y*(self.building_size + 4)))
+            return (
+                int(self.building_size / 2 + x * (self.building_size + 4)),
+                int(self.building_size / 2 + y * (self.building_size + 4)),
+            )
 
         def calculate_building_position_bordered():
-            return (int(3 + (self.building_size + 1)//2 + x*(self.building_size + 4)),
-                    int(3 + (self.building_size + 1)/2 + y*(self.building_size + 4)))
+            return (
+                int(3 + (self.building_size + 1) // 2 + x * (self.building_size + 4)),
+                int(3 + (self.building_size + 1) / 2 + y * (self.building_size + 4)),
+            )
 
         def calculate_building_position_line():
             raise NotImplementedError
 
-        if(self.type == CityType.Default):
+        if self.type == CityType.Default:
             return calculate_building_position_default()
-        if(self.type == CityType.Bordered):
+        if self.type == CityType.Bordered:
             return calculate_building_position_bordered()
-        if(self.type == CityType.Line):
+        if self.type == CityType.Line:
             return calculate_building_position_line()
 
     def create_grid(self):
 
         for x, y in self.building_positions:
-            b_left = int(x - self.building_size/2)
-            b_right = int(x + self.building_size/2)
-            b_up = int(y - self.building_size/2)
-            b_down = int(y + self.building_size/2)
+            b_left = int(x - self.building_size / 2)
+            b_right = int(x + self.building_size / 2)
+            b_up = int(y - self.building_size / 2)
+            b_down = int(y + self.building_size / 2)
 
             self.mark_building(b_left, b_right, b_up, b_down)
             self.mark_parking(b_left, b_right, b_up, b_down)
             self.mark_lights(b_left, b_right, b_up, b_down)
             self.mark_roads(b_left, b_right, b_up, b_down)
 
-        if(self.type == CityType.Bordered):
+        if self.type == CityType.Bordered:
             self.mark_outer_ring()
 
     def mark_building(self, b_left, b_right, b_up, b_down):
@@ -209,13 +219,13 @@ class City:
                 self.mark_grid(i, j, LaneType.Building)
 
     def mark_lights(self, b_left, b_right, b_up, b_down):
-        if(b_left - 1 >= 0 and b_up - 1 >= 0):
+        if b_left - 1 >= 0 and b_up - 1 >= 0:
             self[b_left - 1, b_up - 1] = LaneType.TrafficLight
-        if(b_right < len(self.grid) and b_up - 1 >= 0):
+        if b_right < len(self.grid) and b_up - 1 >= 0:
             self[b_right, b_up - 1] = LaneType.TrafficLight
-        if(b_left - 1 >= 0 and b_down < len(self.grid)):
+        if b_left - 1 >= 0 and b_down < len(self.grid):
             self[b_left - 1, b_down] = LaneType.TrafficLight
-        if(b_right < len(self.grid) and b_down < len(self.grid)):
+        if b_right < len(self.grid) and b_down < len(self.grid):
             self[b_right, b_down] = LaneType.TrafficLight
 
     def mark_parking(self, b_left, b_right, b_up, b_down):
@@ -226,7 +236,6 @@ class City:
         self.mark_up(LaneType.Right, 2, b_left - 1, b_right + 1, b_up, b_down)
         self.mark_left(LaneType.Up, 2, b_left, b_right, b_up - 1, b_down + 1)
         self.mark_right(LaneType.Down, 2, b_left, b_right, b_up - 1, b_down + 1)
-
 
         self.mark_grid(b_left - 2, b_up - 2, LaneType.UpToRight)
         self.mark_grid(b_right + 1, b_up - 2, LaneType.RightToDown)
@@ -263,7 +272,7 @@ class City:
             self.mark_grid(j, i, mark)
 
     def mark_grid(self, x, y, mark):
-        if(self.is_inside(x, y)):
+        if self.is_inside(x, y):
             self[x, y] = mark
 
     def mark_outer_ring(self):
@@ -273,19 +282,19 @@ class City:
         self.mark_grid(len(self.grid) - 1, len(self.grid) - 1, LaneType.RightToUp)
 
         for i in range(1, len(self.grid) - 1):
-            if(i % (self.building_size + 4) == 0):
+            if i % (self.building_size + 4) == 0:
                 self.mark_grid(i, 0, LaneType.LeftToDown)
             else:
                 self.mark_grid(i, 0, LaneType.Left)
-            if(i % (self.building_size + 4) == 1):
+            if i % (self.building_size + 4) == 1:
                 self.mark_grid(i, len(self.grid) - 1, LaneType.RightToUp)
             else:
                 self.mark_grid(i, len(self.grid) - 1, LaneType.Right)
-            if(i % (self.building_size + 4) == 1):
+            if i % (self.building_size + 4) == 1:
                 self.mark_grid(0, i, LaneType.DownToRight)
             else:
                 self.mark_grid(0, i, LaneType.Down)
-            if(i % (self.building_size + 4) == 0):
+            if i % (self.building_size + 4) == 0:
                 self.mark_grid(len(self.grid) - 1, i, LaneType.UpToLeft)
             else:
                 self.mark_grid(len(self.grid) - 1, i, LaneType.Up)
@@ -293,9 +302,14 @@ class City:
     def num_free_park_spaces(self, x, y):
         count = 0
 
-        for i in range(x - (self.building_size + 1)//2 - 1, x + (self.building_size + 1)//2 + 1):
-            for j in range(y - (self.building_size + 1)//2 - 1, y + (self.building_size + 1)//2 + 1):
-                if(self[i, j] == LaneType.FreePark):
+        for i in range(
+            x - (self.building_size + 1) // 2 - 1, x + (self.building_size + 1) // 2 + 1
+        ):
+            for j in range(
+                y - (self.building_size + 1) // 2 - 1,
+                y + (self.building_size + 1) // 2 + 1,
+            ):
+                if self[i, j] == LaneType.FreePark:
                     count += 1
 
         return count
