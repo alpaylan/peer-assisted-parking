@@ -87,6 +87,10 @@ def main(stdscr):
 
         epoch += 1
 
+    for car in sim.cars:
+        Logger.logResult(str(car.carId) + ":" + str(car.waited_epochs))
+        Logger.logResult("\n")
+
 
 if __name__ == "__main__":
     wrapper(main)
