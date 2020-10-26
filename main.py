@@ -2,7 +2,6 @@ from time import sleep, time, ctime
 from os import system
 from sys import argv
 import curses
-import traceback
 from curses import wrapper
 from curses.textpad import Textbox, rectangle
 
@@ -17,8 +16,8 @@ if(len(argv) == 3):
     b_s = argv[1]
     b_n = argv[2]
 else:
-    b_s = 5
-    b_n = 5
+    b_s = 3
+    b_n = 3
 def main(stdscr):
     Logger.startLog()
     sim = CitySimulation(
