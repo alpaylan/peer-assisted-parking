@@ -25,3 +25,5 @@ City grid is given as a command line argument such that:
 Number keys from 1 to 9 generate that amount of car when hit.
 
 Before entering the command, please get a full sized bash window.
+
+Project works in python versions >= 3.7
